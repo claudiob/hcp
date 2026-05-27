@@ -7,3 +7,5 @@ require 'hcp/error'
 require 'hcp/resource'
 require 'hcp/lead'
 require 'hcp/lead/pipeline'
+
+require 'hcp/event'

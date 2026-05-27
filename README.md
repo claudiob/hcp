@@ -1,4 +1,4 @@
-# Housecall Pro API Ruby client
+# The Housecall Pro API Ruby client
 
 ## Available methods
 
