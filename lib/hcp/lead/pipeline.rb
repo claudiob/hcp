@@ -19,7 +19,7 @@ module Hcp
   private
 
     def find_status_by(name:)
-      body = JSON Net::HTTP.get(uri, headers)
+      body = JSON Net::HTTP.get uri.tap { |url| url.query = 'resource_type=lead' }, headers
       body['statuses'].find { |status| status['name'] == name } || unknown_status(name: name)
     end
 
@@ -27,6 +27,6 @@ module Hcp
       raise Error, "Status #{name} not found for lead #{@id}"
     end
 
-    def uri = URI 'https://api.housecallpro.com/pipeline/statuses?resource_type=lead'
+    def uri = URI 'https://api.housecallpro.com/pipeline/statuses'
   end
 end

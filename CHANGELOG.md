@@ -1,3 +1,7 @@
+## [1.1.1] - 2026-05-28
+
+- [Fix] Don't include query params in PUT /pipeline/statuses
+
 ## [1.1.0] - 2026-05-27
 
 - [New] Add Hcp::Event
