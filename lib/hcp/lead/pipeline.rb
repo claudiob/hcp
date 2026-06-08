@@ -11,7 +11,8 @@ module Hcp
       raise Error, "Status #{status_name} not found for lead #{@id}" unless status
 
       payload = { resource_type: 'lead', resource_id: @id, status_id: status['id'] }.to_json
-      Net::HTTP.put uri, payload, headers
+      response = Net::HTTP.put uri, payload, headers
+      raise Error, response.body unless response.is_a? Net::HTTPOK
     rescue Errno::ECONNREFUSED => error
       raise Error, error
     end
