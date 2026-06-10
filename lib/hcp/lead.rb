@@ -10,7 +10,9 @@ module Hcp
     end
 
     def create(params = {})
-      body = JSON Net::HTTP.post(uri, lead_for(params).to_json, headers).body
+      response = Net::HTTP.post uri, lead_for(params).to_json, headers
+      raise Error, response.body unless response.is_a? Net::HTTPOK
+      body = JSON response.body
       @id, @customer_id = body['id'], body.dig('customer', 'id')
     rescue Errno::ECONNREFUSED => error
       raise Error, error

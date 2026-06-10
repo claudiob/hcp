@@ -1,3 +1,7 @@
+## [1.2.1] - 2026-06-10
+
+- [Fix] Raise if Lead.create is not successful
+
 ## [1.2.0] - 2026-06-08
 
 - [Fix] Raise if Lead::Pipeline.update is not successful
