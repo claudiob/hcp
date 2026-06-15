@@ -1,3 +1,7 @@
+## [1.2.2] - 2026-06-15
+
+- [Fix] Replace Net::HTTPOK with broader Net::HTTPSuccess
+
 ## [1.2.1] - 2026-06-10
 
 - [Fix] Raise if Lead.create is not successful
