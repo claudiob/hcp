@@ -12,7 +12,7 @@ module Hcp
     end
 
     # @return [Symbol] the type of event, e.g.: :lead_converted, :job_created, :invoice_sent.
-    def type = @params[:event].gsub('.', '_').to_sym
+    def type = @params.fetch(:event, '').gsub('.', '_').to_sym
 
     # @return [String] unique identifier of the lead in a :lead_converted event.
     def lead_id = @params.dig :lead, :id

@@ -1,3 +1,7 @@
+## [1.2.4] - 2026-06-17
+
+- [Fix] Set event.type when params is nil
+
 ## [1.2.3] - 2026-06-15
 
 - [New] Parse estimate_id for :estimate_sent event
