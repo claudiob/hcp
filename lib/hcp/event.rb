@@ -23,8 +23,8 @@ module Hcp
     # @return [String] unique identifier of the job in a :job_created/scheduled/completed event.
     def job_id = @params.dig :job, :id
 
-    # @return [String] unique identifier of the estimate in a :job_created event.
-    def estimate_id = @params.dig :job, :original_estimate_id
+    # @return [String] unique estimate identifier in a :job_created of :estimate_sent event.
+    def estimate_id = @params.dig(:job, :original_estimate_id) || @params.dig(:estimate, :id)
 
     # @return [Symbol] the latest conversion type, can be :estimate or :job.
     def conversion_type = conversion['type'].downcase.to_sym

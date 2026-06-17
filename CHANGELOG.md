@@ -1,3 +1,7 @@
+## [1.2.3] - 2026-06-15
+
+- [New] Parse estimate_id for :estimate_sent event
+
 ## [1.2.2] - 2026-06-15
 
 - [Fix] Replace Net::HTTPOK with broader Net::HTTPSuccess
