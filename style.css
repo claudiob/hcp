@@ -1,0 +1,410 @@
+/* ---------------------------------------------------------------------------
+   A sibling of the jbr pages, and lit the same way: light mode is a workbench
+   under daylight — duck cloth, steel, paper — and dark mode is that bench at
+   dusk with one work light over it. The bones and the type are jbr's. What
+   moves is the accent: jbr is burnt orange, hcp is the blue on a service van.
+   Code blocks stay dark in both, because the token colors then only have to be
+   right once.
+   --------------------------------------------------------------------------- */
+:root {
+  --bg: #E7E4DC;
+  --bg-deep: #D6D2C6;
+  --surface: #F5F3EC;
+  --surface-2: #EAE7DE;
+  --ink: #1E2226;
+  --ink-soft: #4B545B;
+  --heading: #14181B;
+  --accent: #14607C;
+  --accent-bright: #2688AB;
+  --accent-ink: #F1FAFD;
+  --brass: #8A6318;
+  --slate: #445661;
+  --edge: #C0B9AA;
+  --edge-strong: #9F9684;
+  --metal-a: #FDFCF8;
+  --metal-b: #DCD8CB;
+  --grain: 0.055;
+  --shadow: 0 1px 0 #FFFFFF inset, 0 2px 6px rgba(30, 34, 38, 0.12);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #15181B;
+    --bg-deep: #0E1113;
+    --surface: #1E2328;
+    --surface-2: #262C31;
+    --ink: #E7EAED;
+    --ink-soft: #A2ACB4;
+    --heading: #F2F4F6;
+    --accent: #63C2E4;
+    --accent-bright: #91D8F0;
+    --accent-ink: #10171A;
+    --brass: #D2B071;
+    --slate: #9DB2BF;
+    --edge: #313940;
+    --edge-strong: #4A545C;
+    --metal-a: #2B3238;
+    --metal-b: #171B1F;
+    --grain: 0.075;
+    --shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 2px 8px rgba(0, 0, 0, 0.45);
+  }
+}
+:root {
+  --code-bg: #0B0E10;
+  --code-edge: #2A3238;
+  --code-ink: #DDE2E6;
+  --tok-comment: #7E8992;
+  --tok-const: #7FC9E6;
+  --tok-method: #A8C4DC;
+  --tok-string: #CBB37D;
+  --tok-number: #DE9257;
+  --tok-symbol: #A9BC86;
+  --tok-punc: #98A2A9;
+  --font-head: 'Avenir Next Condensed', Bahnschrift, 'Roboto Condensed', 'DejaVu Sans Condensed', Futura, sans-serif;
+  --font-body: system-ui, 'Segoe UI', Roboto, 'DejaVu Sans', sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 1rem/1.65 var(--font-body);
+  overflow-x: hidden;
+}
+
+/* A faint fractal grain over everything, the way paint looks on a tool that has
+   been used. Inline SVG turbulence, so it costs one data URI and no request. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9;
+  opacity: var(--grain);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+h1, h2, h3 { color: var(--heading); line-height: 1.15; }
+p { margin: 0 0 1rem; }
+a { color: var(--accent); text-underline-offset: 0.2em; }
+a:hover { text-decoration-thickness: 0.14em; }
+:focus-visible { outline: 3px solid var(--accent-bright); outline-offset: 3px; border-radius: 3px; }
+
+.wrap { width: min(58rem, 100% - 2rem); margin-inline: auto; }
+
+.skip {
+  position: absolute; left: 0.75rem; top: -4rem; z-index: 40;
+  background: var(--surface); color: var(--accent);
+  padding: 0.6rem 1rem; border: 2px solid var(--accent);
+  font: 700 0.9rem/1 var(--font-head); letter-spacing: 0.08em; text-transform: uppercase;
+  transition: top 0.15s ease-out;
+}
+.skip:focus { top: 0.75rem; }
+
+/* --- The level ----------------------------------------------------------
+   A spirit level laid across the top of the page. The vial runs the width of
+   the window and the bubble sits where the reader has got to, so the page is
+   read level when the bubble is centered. It is the scroll indicator, and it
+   is the only chrome the pages have. */
+.level {
+  position: fixed; top: 0; left: 0; right: 0; height: 12px; z-index: 30;
+  background: linear-gradient(180deg, var(--metal-a), var(--metal-b));
+  border-bottom: 1px solid var(--edge-strong);
+  pointer-events: none;
+}
+.vial {
+  position: absolute; inset: 2px 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0));
+}
+.bubble {
+  position: absolute; top: 1px; bottom: 1px; left: 0; width: 34px;
+  border-radius: 5px;
+  background: linear-gradient(180deg, var(--accent-bright), var(--accent));
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18) inset;
+}
+
+/* --- Hero ---------------------------------------------------------------- */
+.hero {
+  position: relative;
+  padding: 3.5rem 0 2.5rem;
+  background:
+    radial-gradient(75% 120% at 78% 8%, rgba(38, 136, 171, 0.16) 0%, rgba(38, 136, 171, 0) 62%),
+    linear-gradient(180deg, var(--surface-2) 0%, var(--bg) 100%);
+  border-bottom: 1px solid var(--edge);
+  overflow: hidden;
+}
+.hero.slim { padding: 2.5rem 0 1.75rem; }
+/* Brushed metal: hairlines running the long way, the way a steel plate is finished. */
+.hero::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(96deg,
+    rgba(255, 255, 255, 0.05) 0 1px,
+    transparent 1px 3px,
+    rgba(0, 0, 0, 0.035) 3px 4px,
+    transparent 4px 7px);
+}
+.hero .wrap { position: relative; z-index: 2; }
+.hero-grid { display: grid; gap: 1.5rem 2.5rem; align-items: center; }
+@media (min-width: 52rem) { .hero-grid { grid-template-columns: 1fr 1fr; } }
+
+.plate {
+  display: inline-flex; align-items: center; gap: 0.55rem;
+  padding: 0.3rem 0.75rem;
+  background: linear-gradient(180deg, var(--metal-a), var(--metal-b));
+  border: 1px solid var(--edge-strong);
+  border-radius: 2px;
+  font: 700 0.72rem/1 var(--font-head);
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--ink-soft);
+  box-shadow: var(--shadow);
+}
+.plate .rivet {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--edge-strong);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+h1 {
+  font: 800 clamp(4rem, 17vw, 7.5rem)/0.9 var(--font-mono);
+  margin: 0.55rem 0 0; letter-spacing: -0.06em;
+  color: var(--heading);
+}
+h1.page { font: 800 clamp(2.4rem, 9vw, 4rem)/0.95 var(--font-mono); }
+.tagline {
+  font: 700 clamp(1.15rem, 4vw, 1.6rem)/1.25 var(--font-head);
+  letter-spacing: 0.01em;
+  margin: 0.9rem 0 0.5rem; color: var(--ink);
+  font-stretch: 87.5%;
+}
+.sub { color: var(--ink-soft); max-width: 34rem; margin: 0 0 1.4rem; }
+
+.actions { display: flex; flex-wrap: wrap; gap: 0.7rem; }
+.btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.62rem 1.05rem;
+  font: 700 0.82rem/1 var(--font-head);
+  letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none;
+  border-radius: 3px; border: 1px solid var(--edge-strong);
+  background: transparent; color: var(--accent);
+  box-shadow: var(--shadow);
+  transition: transform 0.16s cubic-bezier(0.2, 0.9, 0.25, 1), filter 0.16s ease;
+}
+.btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.btn:active { transform: translateY(1px); }
+/* A command line is not a label, so it does not get shouted in condensed caps. */
+.btn.mono {
+  font: 600 0.85rem/1 var(--font-mono);
+  letter-spacing: 0; text-transform: none;
+}
+.btn svg { width: 1.05em; height: 1.05em; flex: none; }
+
+/* --- Hero drawing -------------------------------------------------------- */
+.hero-tool { width: 100%; max-width: 30rem; margin-inline: auto; display: block; }
+.hero-tool svg { display: block; width: 100%; height: auto; overflow: visible; }
+.tool-line { fill: none; stroke: var(--ink); stroke-width: 5; stroke-linejoin: round; stroke-linecap: round; }
+.tool-ghost { fill: none; stroke: var(--accent); stroke-width: 3.5; opacity: 0.45; stroke-linejoin: round; stroke-linecap: round; }
+.tool-fill { fill: var(--surface); opacity: 0.55; }
+.bench { stroke: var(--edge-strong); stroke-width: 2.5; stroke-linecap: round; fill: none; }
+.chime { fill: var(--accent); opacity: 0; }
+.door { transform-box: view-box; transform-origin: 110px 226px; transition: transform 0.4s cubic-bezier(0.3, 0.9, 0.3, 1); }
+
+/* --- Resource navigation ------------------------------------------------- */
+.rail { margin: 2rem 0 0; }
+.rail h2 {
+  font: 700 0.72rem/1 var(--font-head); letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--ink-soft); margin: 0 0 0.6rem;
+}
+.rail ul { list-style: none; display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0; padding: 0; }
+.rail a {
+  display: block; padding: 0.34rem 0.72rem; border-radius: 2px;
+  background: var(--surface); border: 1px solid var(--edge);
+  color: var(--ink); text-decoration: none;
+  font: 700 0.78rem/1.3 var(--font-head); letter-spacing: 0.08em; text-transform: uppercase;
+}
+.rail a:hover { border-color: var(--accent); color: var(--accent); }
+.rail a[aria-current='page'] {
+  background: var(--accent); border-color: var(--accent); color: var(--accent-ink);
+}
+
+/* --- Main ---------------------------------------------------------------- */
+main { padding: 2.75rem 0 1rem; position: relative; }
+.lede {
+  border-left: 3px solid var(--accent);
+  padding-left: 1rem; margin: 0 0 2.5rem;
+  color: var(--ink-soft); max-width: 42rem;
+}
+
+section { margin: 0 0 3rem; scroll-margin-top: 1.5rem; }
+code.inline {
+  font: 0.9em/1 var(--font-mono);
+  background: var(--surface); border: 1px solid var(--edge);
+  border-radius: 3px; padding: 0.15em 0.35em; color: var(--ink);
+}
+.head { display: flex; align-items: center; gap: 0.7rem; margin: 0 0 0.25rem; }
+.head h2 {
+  font: 700 clamp(1.4rem, 5vw, 1.9rem)/1.1 var(--font-head);
+  letter-spacing: 0.06em; text-transform: uppercase; margin: 0;
+  font-stretch: 87.5%;
+}
+.head .anchor {
+  margin-left: auto; text-decoration: none; color: var(--edge-strong);
+  font: 700 0.8rem/1 var(--font-mono); opacity: 0; transition: opacity 0.15s;
+}
+.head:hover .anchor, .anchor:focus { opacity: 1; color: var(--accent); }
+.head + hr {
+  border: 0; height: 2px; margin: 0 0 1.25rem;
+  background: repeating-linear-gradient(90deg, var(--edge) 0 6px, transparent 6px 10px);
+}
+.glyph { width: 2rem; height: 2rem; flex: none; color: var(--accent); }
+.glyph svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.glyph :is(path, rect, circle, polyline) {
+  fill: none; stroke: currentColor; stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+h3 {
+  font: 700 0.95rem/1.2 var(--font-head); letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink-soft);
+  margin: 1.8rem 0 0.6rem;
+}
+.note { color: var(--ink-soft); margin: 0 0 0.7rem; max-width: 44rem; }
+
+/* --- Specification tables ------------------------------------------------
+   What a resource may be narrowed, ordered or expanded by is a list of pairs,
+   and a pair reads best in two columns. */
+.spec-scroll { overflow-x: auto; margin: 0 0 1.4rem; -webkit-overflow-scrolling: touch; }
+table.spec {
+  width: 100%; border-collapse: collapse;
+  background: var(--surface); border: 1px solid var(--edge);
+  font-size: 0.92rem;
+}
+table.spec caption {
+  text-align: left; color: var(--ink-soft); padding: 0 0 0.5rem;
+  font: 700 0.72rem/1.3 var(--font-head); letter-spacing: 0.16em; text-transform: uppercase;
+}
+table.spec th, table.spec td {
+  text-align: left; padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--edge); vertical-align: top;
+}
+table.spec thead th {
+  font: 700 0.72rem/1.3 var(--font-head); letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-soft); background: var(--surface-2);
+}
+table.spec tbody tr:last-child :is(th, td) { border-bottom: 0; }
+table.spec td.mono, table.spec th.mono { font: 0.86rem/1.5 var(--font-mono); color: var(--ink); }
+
+/* --- Code ---------------------------------------------------------------- */
+.snippet {
+  position: relative; margin: 0 0 1.4rem;
+  background: var(--code-bg);
+  border: 1px solid var(--code-edge);
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+}
+.snippet::before {
+  content: ''; position: absolute; left: 0; right: 0; top: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent-bright), transparent 55%);
+  border-radius: 4px 4px 0 0;
+}
+.snippet pre {
+  margin: 0; padding: 1rem 1.1rem; overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.snippet code {
+  font: 0.875rem/1.7 var(--font-mono);
+  color: var(--code-ink);
+  white-space: pre;
+  tab-size: 2;
+}
+@media (min-width: 40rem) { .snippet pre { padding-right: 6.5rem; } }
+.snippet .c { color: var(--tok-comment); font-style: italic; }
+.snippet .s { color: var(--tok-string); }
+.snippet .n { color: var(--tok-number); }
+.snippet .y { color: var(--tok-symbol); }
+.snippet .k { color: var(--tok-const); font-weight: 600; }
+.snippet .t { color: var(--tok-const); }
+.snippet .m { color: var(--tok-method); }
+.snippet .p { color: var(--tok-punc); }
+
+.copy {
+  position: absolute; top: 0.5rem; right: 0.5rem;
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.32rem 0.6rem;
+  background: #1A2126; color: #C6CED4;
+  border: 1px solid #333C43; border-radius: 3px;
+  font: 700 0.68rem/1 var(--font-head); letter-spacing: 0.1em; text-transform: uppercase;
+  cursor: pointer;
+}
+.copy:hover { border-color: var(--accent-bright); color: #CDEAF6; }
+.copy svg { width: 13px; height: 13px; display: block; overflow: visible; }
+.copy svg path { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linejoin: round; }
+.copy .socket { transform-box: fill-box; transform-origin: center; }
+.copy.done { color: #8AD3EC; border-color: #1F5468; }
+@media (max-width: 39.99rem) {
+  .copy { position: static; margin: 0.5rem 0.5rem 0 auto; display: flex; width: max-content; }
+  .snippet { display: flex; flex-direction: column-reverse; }
+}
+
+/* --- Cards on the front page --------------------------------------------- */
+.cards { display: grid; gap: 0.9rem; padding: 0; margin: 0 0 1.5rem; list-style: none; }
+@media (min-width: 40rem) { .cards { grid-template-columns: 1fr 1fr; } }
+.cards li {
+  background: var(--surface); border: 1px solid var(--edge); border-radius: 3px;
+  padding: 0.9rem 1rem; box-shadow: var(--shadow);
+}
+.cards a {
+  font: 700 1rem/1.2 var(--font-head); letter-spacing: 0.1em; text-transform: uppercase;
+  text-decoration: none;
+}
+.cards a:hover { text-decoration: underline; }
+.cards p { margin: 0.35rem 0 0; color: var(--ink-soft); font-size: 0.92rem; }
+.cards code { font: 0.82rem/1.5 var(--font-mono); color: var(--ink-soft); }
+
+/* --- Footer -------------------------------------------------------------- */
+footer {
+  margin-top: 2rem; padding: 2.25rem 0 3rem;
+  border-top: 1px solid var(--edge);
+  background: linear-gradient(180deg, var(--bg) 0%, var(--surface-2) 100%);
+  position: relative;
+}
+footer p { color: var(--ink-soft); max-width: 40rem; }
+.foot-links { display: flex; flex-wrap: wrap; gap: 0.7rem; margin: 1.1rem 0 0; }
+
+/* --- Motion -------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  /* The drawing is inked on, outline first, then what it is about to do. */
+  .drawn { stroke-dasharray: 100; stroke-dashoffset: 100; animation: ink 1.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+  .drawn.late { animation-delay: 0.75s; }
+  @keyframes ink { to { stroke-dashoffset: 0; } }
+
+  /* Ring the bell and the door comes open. */
+  .hero-tool:hover .door, .hero-tool:focus-within .door { transform: rotate(-13deg); }
+  .hero-tool:hover .chime, .hero-tool:focus-within .chime { animation: ring 0.9s ease-out; }
+  @keyframes ring { 0% { opacity: 0.7; transform: scale(0.6); } 100% { opacity: 0; transform: scale(1.6); } }
+  .chime { transform-box: view-box; transform-origin: 215px 176px; }
+
+  /* Only hidden when the script that reveals them is actually running. */
+  .js main section { opacity: 0; transform: translateY(14px); transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.2, 0.9, 0.25, 1); }
+  .js main section.seen { opacity: 1; transform: none; }
+
+  .glyph :is(g, path, rect, circle, polyline) { transition: transform 0.26s cubic-bezier(0.2, 0.9, 0.25, 1); transform-box: view-box; }
+  .head:hover .g-list .row { transform: translateX(2.5px); }
+  .head:hover .g-funnel .drip { transform: translateY(2.5px); }
+  .head:hover .g-sort .arrow { transform: translateY(-2px); }
+  .head:hover .g-box .lid { transform: translateY(-2.5px); }
+  .head:hover .g-clock .hand { transform: rotate(28deg); transform-origin: 16px 17px; }
+  .head:hover .g-bell .clapper { animation: swing 0.5s ease-in-out; }
+  @keyframes swing { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(-13deg); } 70% { transform: rotate(9deg); } }
+  .g-bell .clapper { transform-origin: 16px 8px; }
+  .head:hover .g-pin .dot { transform: translateY(-1.5px); }
+  .head:hover .g-tag .hole { transform: translate(1.5px, 1.5px); }
+
+  /* The copy button seats like a socket: a sixth of a turn and it is on. */
+  .copy.done .socket { transform: rotate(60deg); transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.25, 1.5); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .level { display: none; }
+}

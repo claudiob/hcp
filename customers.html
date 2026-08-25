@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang='en'>
+<head>
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<title>Customers &mdash; hcp, a Ruby client for the Housecall Pro API</title>
+<meta name='description' content='Reading Housecall Pro customers in Ruby with Hcp::Customer: the free-text search, the two sorts, and everything a customer and their addresses read.'>
+<!-- All rendered from icon.svg by build-icons.sh; nothing on this page is fetched from anywhere else. -->
+<link rel='icon' href='icon.svg' type='image/svg+xml'>
+<link rel='icon' href='favicon-96x96.png' type='image/png' sizes='96x96'>
+<link rel='icon' href='favicon.ico' sizes='16x16 32x32 48x48'>
+<link rel='apple-touch-icon' href='apple-touch-icon.png' sizes='180x180'>
+<link rel='manifest' href='site.webmanifest'>
+<meta name='apple-mobile-web-app-title' content='hcp'>
+<meta name='theme-color' content='#E7E4DC' media='(prefers-color-scheme: light)'>
+<meta name='theme-color' content='#15181B' media='(prefers-color-scheme: dark)'>
+<link rel='stylesheet' href='style.css'>
+<script>document.documentElement.className = 'js';</script>
+</head>
+<body>
+
+<a class='skip' href='#reference'>Skip to the methods</a>
+
+<div class='level' aria-hidden='true'><div class='vial'></div><div class='bubble' id='bubble'></div></div>
+
+<header class='hero slim'>
+  <div class='wrap'>
+    <p class='plate'><span class='rivet'></span>Hcp::Customer<span class='rivet'></span></p>
+    <h1 class='page'>Customers</h1>
+    <p class='tagline'>Whoever the work is for.</p>
+    <p class='sub'>A customer is searched rather than filtered: one string across the name, the email and the numbers. Their addresses come back with them, as a relation of their own.</p>
+    <div class='actions'>
+      <a class='btn' href='https://github.com/claudiob/hcp/blob/main/lib/hcp/resources/customer.rb'><svg viewBox='0 0 16 16' aria-hidden='true' fill='currentColor'><path d='M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z'/></svg>The source</a>
+      <a class='btn' href='https://rubydoc.info/gems/hcp'><svg viewBox='0 0 16 16' aria-hidden='true' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linejoin='round' stroke-linecap='round'><path d='M8 4.2C6.6 2.9 4.5 2.6 2 3v9.6c2.5-.4 4.6-.1 6 1.2 1.4-1.3 3.5-1.6 6-1.2V3c-2.5-.4-4.6-.1-6 1.2z'/><path d='M8 4.2v10.6'/></svg>The reference</a>
+    </div>
+
+    <nav class='rail' aria-labelledby='rail-title'>
+      <h2 id='rail-title'>Every resource the gem reads</h2>
+      <ul>
+        <li><a href='index.html'>Overview</a></li>
+        <li><a href='jobs.html'>Jobs</a></li>
+        <li><a href='customers.html' aria-current='page'>Customers</a></li>
+        <li><a href='estimates.html'>Estimates</a></li>
+        <li><a href='appointments.html'>Appointments</a></li>
+        <li><a href='records.html'>Records</a></li>
+        <li><a href='leads.html'>Leads</a></li>
+        <li><a href='events.html'>Events</a></li>
+        <li><a href='errors.html'>Errors</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id='reference'>
+  <div class='wrap'>
+    <p class='lede'>A customer is the record a job, an estimate and a lead all point at. It reads, and this release writes none of it.</p>
+
+    <section id='reading'>
+      <div class='head'>
+        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-list'><path class='row' d='M12 9h14'/><path class='row' d='M12 16h14'/><path class='row' d='M12 23h14'/><circle cx='7' cy='9' r='1.4'/><circle cx='7' cy='16' r='1.4'/><circle cx='7' cy='23' r='1.4'/></svg></span>
+        <h2>Reading customers</h2>
+        <a class='anchor' href='#reading' aria-label='Link to Reading customers'>#</a>
+      </div>
+      <hr>
+
+      <p class='note'><code class='inline'>Hcp::Customer</code> is read from the top, and answers the same eight entry points every queryable resource does.</p>
+      <div class='snippet'><pre><code>Hcp::Customer.all
+Hcp::Customer.find 'cus_c3fd9f15d014442aa3165fccf68ae95c'
+Hcp::Customer.first
+Hcp::Customer.count  # =&gt; 5379
+Hcp::Customer.limit 50
+Hcp::Customer.order created_at: :desc
+Hcp::Customer.where q: 'Ada'
+Hcp::Customer.includes :do_not_service</code></pre></div>
+      <p class='note'>With a location named:</p>
+      <div class='snippet'><pre><code>company_id = '143e13ab-943d-483b-b9f9-14821c53c849'
+
+Hcp::Customer.find 'cus_c3fd9f15d014442aa3165fccf68ae95c', company_id: company_id
+Hcp::Customer.count company_id: company_id</code></pre></div>
+    </section>
+
+    <section id='narrowing'>
+      <div class='head'>
+        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-funnel'><path d='M4.5 6h23L18.5 17v8.5l-5 3V17z'/><path class='drip' d='M16 29.5v-1.5'/></svg></span>
+        <h2>Narrowing a list of customers</h2>
+        <a class='anchor' href='#narrowing' aria-label='Link to Narrowing a list of customers'>#</a>
+      </div>
+      <hr>
+
+      <p class='note'>A customer is narrowed by one free-text search rather than by named fields. Housecall Pro reads <code class='inline'>q</code> across the name, the email and the numbers it holds, so one string is the whole of the search.</p>
+    <div class='spec-scroll'>
+      <table class='spec'>
+        <caption>Hcp::Customer::FILTERS</caption>
+        <thead><tr><th scope='col'>Condition</th><th scope='col'>What Housecall Pro takes</th><th scope='col'>Value</th></tr></thead>
+        <tbody>
+          <tr><th scope='row' class='mono'>q</th><td class='mono'>q</td><td class='mono'>one string</td></tr>
+          <tr><th scope='row' class='mono'>location_ids</th><td class='mono'>location_ids</td><td class='mono'>one, or several</td></tr>
+        </tbody>
+      </table>
+    </div>
+      <div class='snippet'><pre><code>Hcp::Customer.where q: 'Ada'
+Hcp::Customer.where q: 'ada@example.com'
+Hcp::Customer.where q: '5550000001'
+Hcp::Customer.where(q: 'Ada').order(created_at: :desc).limit 5</code></pre></div>
+      <p class='note'><code class='inline'>location_ids</code> is the one condition Housecall Pro takes more than one of, so a single ID works as well as a list. That set is <code class='inline'>Hcp::Customer::MANY</code>.</p>
+      <p class='note'><code class='inline'>q</code> takes a value and not a range, and says so rather than sending something Housecall Pro would read as a filter it does not have:</p>
+      <div class='snippet'><pre><code>Hcp::Customer.where email: 'ada@example.com'
+# =&gt; Hcp::Error: email is not one of: q, location_ids
+
+Hcp::Customer.where(q: 'a'..'z').first
+# =&gt; Hcp::Error: q takes one value, not a range</code></pre></div>
+    </section>
+
+    <section id='ordering'>
+      <div class='head'>
+        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-sort'><path d='M7 22.5l4.5 5 4.5-5'/><path class='arrow' d='M11.5 26.5V5'/><path d='M20 9h7'/><path d='M20 16h6'/><path d='M20 23h5'/></svg></span>
+        <h2>Ordering a list of customers</h2>
+        <a class='anchor' href='#ordering' aria-label='Link to Ordering a list of customers'>#</a>
+      </div>
+      <hr>
+
+      <p class='note'>Two columns, and one order at a time.</p>
+    <div class='spec-scroll'>
+      <table class='spec'>
+        <caption>Hcp::Customer::SORTS</caption>
+        <thead><tr><th scope='col'>In order of</th><th scope='col'>Direction</th></tr></thead>
+        <tbody>
+          <tr><th scope='row' class='mono'>created_at</th><td class='mono'>:asc or :desc</td></tr>
+          <tr><th scope='row' class='mono'>updated_at</th><td class='mono'>:asc or :desc</td></tr>
+        </tbody>
+      </table>
+    </div>
+      <div class='snippet'><pre><code>Hcp::Customer.order created_at: :desc
+Hcp::Customer.order updated_at: :asc
+
+Hcp::Customer.order name: :asc
+# =&gt; Hcp::Error: name is not one of: created_at, updated_at</code></pre></div>
+    </section>
+
+    <section id='expanding'>
+      <div class='head'>
+        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-box'><path class='lid' d='M4.5 11 16 5.5 27.5 11'/><path d='M4.5 11v12L16 28.5 27.5 23V11'/><path d='M16 16.5v12'/><path d='M4.5 11 16 16.5 27.5 11'/></svg></span>
+        <h2>Bringing more back</h2>
+        <a class='anchor' href='#expanding' aria-label='Link to Bringing more back'>#</a>
+      </div>
+      <hr>
+
+    <div class='spec-scroll'>
+      <table class='spec'>
+        <caption>Hcp::Customer::EXPANDS</caption>
+        <thead><tr><th scope='col'>Expansion</th><th scope='col'>What it asks for</th></tr></thead>
+        <tbody>
+          <tr><th scope='row' class='mono'>:attachments</th><td class='mono'>what is filed against the customer</td></tr>
+          <tr><th scope='row' class='mono'>:do_not_service</th><td class='mono'>whether the account has marked them not to be served</td></tr>
+        </tbody>
+      </table>
+    </div>
+      <div class='snippet'><pre><code>Hcp::Customer.includes(:do_not_service).limit 20</code></pre></div>
+      <p class='note'>This release reads neither back off <code class='inline'>Hcp::Customer</code>: the expansion asks Housecall Pro for them, and no method hands them over yet. A customer's addresses need no expansion &mdash; they arrive with the record, and read as a relation of their own.</p>
+    </section>
+
+    <section id='attributes'>
+      <div class='head'>
+        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-tag'><path d='M17 4.5h10.5V15L14.5 28 4 17.5z'/><circle class='hole' cx='22.5' cy='9.5' r='2'/></svg></span>
+        <h2>What a customer reads</h2>
+        <a class='anchor' href='#attributes' aria-label='Link to What a customer reads'>#</a>
+      </div>
+      <hr>
+
+      <div class='snippet'><pre><code>customer = Hcp::Customer.where(q: 'Ada').first
+
+customer.id         # =&gt; 'cus_c3fd9f15d014442aa3165fccf68ae95c'
+customer.name       # =&gt; 'Ada Example'
+customer.first_name # =&gt; 'Ada'
+customer.last_name  # =&gt; 'Example'
+customer.email      # =&gt; 'ada@example.com'
+customer.company    # =&gt; 'Example Bakery', where the customer is a business
+customer.kind       # =&gt; :homeowner
+customer.lead_source # =&gt; 'HouseAccount', or nil
+customer.tags       # =&gt; ['VIP']
+customer.notifications_enabled? # =&gt; true
+customer.created_at # =&gt; 2026-06-21 14:01:07 UTC
+customer.updated_at # =&gt; 2026-06-21 14:01:07 UTC</code></pre></div>
+      <p class='note'><code class='inline'>name</code> is whichever of the two names Housecall Pro holds, joined, and never a stray space where it holds one of them. A business reads off <code class='inline'>company</code>, which is a field of its own rather than a third name.</p>
+      <p class='note'>Housecall Pro holds three numbers &mdash; mobile, home and work &mdash; and a caller almost always wants whichever one there is. <code class='inline'>phone</code> is the first of the three the customer can be reached on:</p>
+      <div class='snippet'><pre><code>customer.phone # =&gt; '5550000001'</code></pre></div>
+    </section>
+
+    <section id='nested'>
+      <div class='head'>
+        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-pin'><path d='M16 29s9-9.5 9-16a9 9 0 1 0-18 0c0 6.5 9 16 9 16z'/><circle class='dot' cx='16' cy='13' r='3.2'/></svg></span>
+        <h2>Where a customer is billed and served</h2>
+        <a class='anchor' href='#nested' aria-label='Link to Where a customer is billed and served'>#</a>
+      </div>
+      <hr>
+
+      <p class='note'>Addresses are a relation under the customer, so they walk, count and <code class='inline'>find</code> by ID:</p>
+      <div class='snippet'><pre><code>customer.addresses.count # =&gt; 1
+
+address = customer.addresses.first
+address.id        # =&gt; 'adr_703532314fe64002a5104d3e0a29f611'
+address.type      # =&gt; :billing, or :service
+address.street    # =&gt; '1 Example Street'
+address.city      # =&gt; 'Springfield'
+address.state     # =&gt; 'CA'
+address.zip       # =&gt; '90210'
+address.latitude  # =&gt; 34.0
+address.longitude # =&gt; -118.0</code></pre></div>
+      <p class='note'>Every reader an address has is on <a href='records.html#addresses'>the records page</a>. Housecall Pro takes no conditions on a customer's addresses, so the relation walks and counts but does not <code class='inline'>where</code>.</p>
+    </section>
+
+    <section id='writing'>
+      <div class='head'>
+        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-ban'><circle cx='16' cy='16' r='11'/><path d='M8.2 8.2 23.8 23.8'/></svg></span>
+        <h2>What a customer does not do</h2>
+        <a class='anchor' href='#writing' aria-label='Link to What a customer does not do'>#</a>
+      </div>
+      <hr>
+
+      <p class='note'>Housecall Pro takes no write for a customer that this gem speaks yet, so <code class='inline'>Hcp::Customer</code> has no <code class='inline'>create</code>, no <code class='inline'>update</code> and no <code class='inline'>destroy</code>. Opening a customer alongside a <a href='leads.html'>lead</a> is the one way the gem puts one on the account.</p>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class='wrap'>
+    <p>Every method here carries a one-line description and a return type in the API reference, generated from the same source this page was written from.</p>
+    <div class='foot-links'>
+      <a class='btn' href='https://github.com/claudiob/hcp'><svg viewBox='0 0 16 16' aria-hidden='true' fill='currentColor'><path d='M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z'/></svg>The source</a>
+      <a class='btn' href='https://rubydoc.info/gems/hcp'><svg viewBox='0 0 16 16' aria-hidden='true' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linejoin='round' stroke-linecap='round'><path d='M8 4.2C6.6 2.9 4.5 2.6 2 3v9.6c2.5-.4 4.6-.1 6 1.2 1.4-1.3 3.5-1.6 6-1.2V3c-2.5-.4-4.6-.1-6 1.2z'/><path d='M8 4.2v10.6'/></svg>The reference</a>
+      <a class='btn mono' href='https://rubygems.org/gems/hcp'>gem install hcp</a>
+    </div>
+  </div>
+</footer>
+
+<script src='hcp.js'></script>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang='en'>
+<head>
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<title>Events &mdash; hcp, a Ruby client for the Housecall Pro API</title>
+<meta name='description' content='Reading a Housecall Pro webhook payload in Ruby with Hcp::Event, without reaching the network for anything.'>
+<!-- All rendered from icon.svg by build-icons.sh; nothing on this page is fetched from anywhere else. -->
+<link rel='icon' href='icon.svg' type='image/svg+xml'>
+<link rel='icon' href='favicon-96x96.png' type='image/png' sizes='96x96'>
+<link rel='icon' href='favicon.ico' sizes='16x16 32x32 48x48'>
+<link rel='apple-touch-icon' href='apple-touch-icon.png' sizes='180x180'>
+<link rel='manifest' href='site.webmanifest'>
+<meta name='apple-mobile-web-app-title' content='hcp'>
+<meta name='theme-color' content='#E7E4DC' media='(prefers-color-scheme: light)'>
+<meta name='theme-color' content='#15181B' media='(prefers-color-scheme: dark)'>
+<link rel='stylesheet' href='style.css'>
+<script>document.documentElement.className = 'js';</script>
+</head>
+<body>
+
+<a class='skip' href='#reference'>Skip to the methods</a>
+
+<div class='level' aria-hidden='true'><div class='vial'></div><div class='bubble' id='bubble'></div></div>
+
+<header class='hero slim'>
+  <div class='wrap'>
+    <p class='plate'><span class='rivet'></span>Hcp::Event<span class='rivet'></span></p>
+    <h1 class='page'>Events</h1>
+    <p class='tagline'>What Housecall Pro sent a webhook to say, read without reaching the network.</p>
+    <p class='sub'>An event is a reader over the payload: it names what happened and hands back the IDs of what it happened to. There is no request in it, so it costs nothing and needs no key.</p>
+    <div class='actions'>
+      <a class='btn' href='https://github.com/claudiob/hcp/blob/main/lib/hcp/event.rb'><svg viewBox='0 0 16 16' aria-hidden='true' fill='currentColor'><path d='M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z'/></svg>The source</a>
+      <a class='btn' href='https://rubydoc.info/gems/hcp'><svg viewBox='0 0 16 16' aria-hidden='true' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linejoin='round' stroke-linecap='round'><path d='M8 4.2C6.6 2.9 4.5 2.6 2 3v9.6c2.5-.4 4.6-.1 6 1.2 1.4-1.3 3.5-1.6 6-1.2V3c-2.5-.4-4.6-.1-6 1.2z'/><path d='M8 4.2v10.6'/></svg>The reference</a>
+    </div>
+
+    <nav class='rail' aria-labelledby='rail-title'>
+      <h2 id='rail-title'>Every resource the gem reads</h2>
+      <ul>
+        <li><a href='index.html'>Overview</a></li>
+        <li><a href='jobs.html'>Jobs</a></li>
+        <li><a href='customers.html'>Customers</a></li>
+        <li><a href='estimates.html'>Estimates</a></li>
+        <li><a href='appointments.html'>Appointments</a></li>
+        <li><a href='records.html'>Records</a></li>
+        <li><a href='leads.html'>Leads</a></li>
+        <li><a href='events.html' aria-current='page'>Events</a></li>
+        <li><a href='errors.html'>Errors</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id='reference'>
+  <div class='wrap'>
+    <p class='lede'>A webhook says what changed. Everything else on this site says how to go and read it.</p>
+
+    <section id='reading'>
+      <div class='head'>
+        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-bell'><path class='clapper' d='M16 4a8 8 0 0 0-8 8c0 6-2 8-2 8h20s-2-2-2-8a8 8 0 0 0-8-8z'/><path class='clapper' d='M13.4 24a2.7 2.7 0 0 0 5.2 0'/></svg></span>
+        <h2>Reading a payload</h2>
+        <a class='anchor' href='#reading' aria-label='Link to Reading a payload'>#</a>
+      </div>
+      <hr>
+
+      <p class='note'><code class='inline'>Hcp::Event</code> is handed the payload of a Housecall Pro webhook and reaches the network for nothing. It has no key, no <code class='inline'>company_id</code> and no request in it &mdash; it is a reader over a hash.</p>
+      <div class='snippet'><pre><code>event = Hcp::Event.new params
+event.type # =&gt; :job_scheduled</code></pre></div>
+      <p class='note'><code class='inline'>type</code> is what Housecall Pro named the event, with its dot turned into an underscore, so <code class='inline'>job.scheduled</code> reads as <code class='inline'>:job_scheduled</code> and fits a <code class='inline'>case</code> the way a symbol should:</p>
+      <div class='snippet'><pre><code>event = Hcp::Event.new params
+
+case event.type
+  when :job_scheduled then Hcp::Job.find event.job_id, company_id: company_id
+  when :estimate_sent then Hcp::Estimate.find event.estimate_id, company_id: company_id
+  when :invoice_sent then event.invoice_amount
+end</code></pre></div>
+      <p class='note'>The payload is read by symbol, so a hash parsed from JSON needs its names symbolized. In Rails, controller params already answer to both:</p>
+      <div class='snippet'><pre><code>event = Hcp::Event.new JSON.parse(request.raw_post, symbolize_names: true)</code></pre></div>
+      <p class='note'>An event read from nothing names nothing rather than raising: <code class='inline'>Hcp::Event.new.type.to_s</code> is empty.</p>
+    </section>
+
+    <section id='what'>
+      <div class='head'>
+        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-tag'><path d='M17 4.5h10.5V15L14.5 28 4 17.5z'/><circle class='hole' cx='22.5' cy='9.5' r='2'/></svg></span>
+        <h2>What each event carries</h2>
+        <a class='anchor' href='#what' aria-label='Link to What each event carries'>#</a>
+      </div>
+      <hr>
+
+      <p class='note'>Housecall Pro sends a different shape for each event, so a reader answers on the events that carry it and <code class='inline'>nil</code> on the ones that do not.</p>
+    <div class='spec-scroll'>
+      <table class='spec'>
+        <caption>Hcp::Event</caption>
+        <thead><tr><th scope='col'>Reader</th><th scope='col'>Answers on</th><th scope='col'>Reads</th></tr></thead>
+        <tbody>
+          <tr><th scope='row' class='mono'>type</th><td class='mono'>every event</td><td class='mono'>the event, as a symbol</td></tr>
+          <tr><th scope='row' class='mono'>job_id</th><td class='mono'>job.created, job.scheduled, job.completed</td><td class='mono'>the job</td></tr>
+          <tr><th scope='row' class='mono'>customer_id</th><td class='mono'>lead.converted, job.created</td><td class='mono'>the customer</td></tr>
+          <tr><th scope='row' class='mono'>lead_id</th><td class='mono'>lead.converted</td><td class='mono'>the lead</td></tr>
+          <tr><th scope='row' class='mono'>estimate_id</th><td class='mono'>job.created, estimate.sent</td><td class='mono'>the estimate</td></tr>
+          <tr><th scope='row' class='mono'>conversion_type</th><td class='mono'>lead.converted</td><td class='mono'>:estimate or :job</td></tr>
+          <tr><th scope='row' class='mono'>conversion_id</th><td class='mono'>lead.converted</td><td class='mono'>what the lead became</td></tr>
+          <tr><th scope='row' class='mono'>scheduled_at</th><td class='mono'>job.scheduled</td><td class='mono'>when the job is booked for</td></tr>
+          <tr><th scope='row' class='mono'>completed_at</th><td class='mono'>job.completed</td><td class='mono'>when the work was finished</td></tr>
+          <tr><th scope='row' class='mono'>invoice_id</th><td class='mono'>invoice.sent</td><td class='mono'>the invoice</td></tr>
+          <tr><th scope='row' class='mono'>invoice_job_id</th><td class='mono'>invoice.sent</td><td class='mono'>the job it bills</td></tr>
+          <tr><th scope='row' class='mono'>invoice_amount</th><td class='mono'>invoice.sent</td><td class='mono'>what it comes to, in dollars</td></tr>
+        </tbody>
+      </table>
+    </div>
+    </section>
+
+    <section id='job'>
+      <div class='head'>
+        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-clip'><rect x='6.5' y='6' width='19' height='22' rx='2.5'/><path class='row' d='M11.5 14h9'/><path class='row' d='M11.5 20h6'/><path d='M12 6V4.6A1.6 1.6 0 0 1 13.6 3h4.8A1.6 1.6 0 0 1 20 4.6V6z'/></svg></span>
+        <h2>A job event</h2>
+        <a class='anchor' href='#job' aria-label='Link to A job event'>#</a>
+      </div>
+      <hr>
+
+      <div class='snippet'><pre><code>event = Hcp::Event.new event: 'job.scheduled', job: { id: 'job_1',
+  customer: { id: 'cus_1' }, original_estimate_id: 'csr_1',
+  schedule: { scheduled_start: '2026-06-26T10:45:00Z' },
+  work_timestamps: { completed_at: '2026-06-26T12:45:00Z' } }
+
+event.type         # =&gt; :job_scheduled
+event.job_id       # =&gt; 'job_1'
+event.customer_id  # =&gt; 'cus_1'
+event.estimate_id  # =&gt; 'csr_1'
+event.scheduled_at # =&gt; 2026-06-26 10:45:00 UTC
+event.completed_at # =&gt; 2026-06-26 12:45:00 UTC</code></pre></div>
+      <p class='note'><code class='inline'>estimate_id</code> is the estimate the job was won with, where there was one. Reach for the whole record with <a href='jobs.html'><code class='inline'>Hcp::Job.find event.job_id</code></a> &mdash; a webhook names what happened, and the API answers for what it happened to.</p>
+    </section>
+
+    <section id='lead'>
+      <div class='head'>
+        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-person'><circle cx='16' cy='11' r='5.5'/><path d='M6 28c0-5.5 4.5-9.5 10-9.5s10 4 10 9.5'/></svg></span>
+        <h2>A lead event</h2>
+        <a class='anchor' href='#lead' aria-label='Link to A lead event'>#</a>
+      </div>
+      <hr>
+
+      <p class='note'>A converted lead carries what it was last turned into, which is an <a href='estimates.html'>estimate</a> or a <a href='jobs.html'>job</a>:</p>
+      <div class='snippet'><pre><code>event = Hcp::Event.new event: 'lead.converted', lead: { id: 'lea_1',
+  customer: { id: 'cus_1' }, conversions: [ { 'type' =&gt; 'Estimate', 'id' =&gt; 'csr_1' } ] }
+
+event.type            # =&gt; :lead_converted
+event.lead_id         # =&gt; 'lea_1'
+event.customer_id     # =&gt; 'cus_1'
+event.conversion_type # =&gt; :estimate
+event.conversion_id   # =&gt; 'csr_1'</code></pre></div>
+      <p class='note'>Housecall Pro sends every conversion the lead has had. <code class='inline'>conversion_type</code> and <code class='inline'>conversion_id</code> read the last of them, which is the one the event is about.</p>
+    </section>
+
+    <section id='invoice'>
+      <div class='head'>
+        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-money'><circle cx='16' cy='16' r='11'/><path d='M16 8.5v15'/><path d='M20 12.5h-5.5a2.75 2.75 0 0 0 0 5.5h3a2.75 2.75 0 0 1 0 5.5H12'/></svg></span>
+        <h2>An invoice event</h2>
+        <a class='anchor' href='#invoice' aria-label='Link to An invoice event'>#</a>
+      </div>
+      <hr>
+
+      <div class='snippet'><pre><code>event = Hcp::Event.new event: 'invoice.sent',
+  invoice: { id: 'inv_1', job_id: 'job_1', amount: '33000' }
+
+event.invoice_id     # =&gt; 'inv_1'
+event.invoice_job_id # =&gt; 'job_1'
+event.invoice_amount # =&gt; 0.33e3, a BigDecimal &mdash; $330.00</code></pre></div>
+      <p class='note'>Housecall Pro counts the invoice in cents and this gem reads it in dollars, the way it reads <a href='records.html#invoices'>every other sum</a>.</p>
+    </section>
+
+    <section id='estimate'>
+      <div class='head'>
+        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-box'><path class='lid' d='M4.5 11 16 5.5 27.5 11'/><path d='M4.5 11v12L16 28.5 27.5 23V11'/><path d='M16 16.5v12'/><path d='M4.5 11 16 16.5 27.5 11'/></svg></span>
+        <h2>An estimate event</h2>
+        <a class='anchor' href='#estimate' aria-label='Link to An estimate event'>#</a>
+      </div>
+      <hr>
+
+      <p class='note'>An estimate sent on its own, rather than through a job, names itself:</p>
+      <div class='snippet'><pre><code>event = Hcp::Event.new event: 'estimate.sent', estimate: { id: 'csr_1' }
+
+event.type        # =&gt; :estimate_sent
+event.estimate_id # =&gt; 'csr_1'</code></pre></div>
+    </section>
+
+    <section id='headers'>
+      <div class='head'>
+        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-key'><circle cx='10' cy='16' r='5.5'/><path d='M15.5 16H28'/><path d='M24 16v5'/><path d='M20 16v4'/></svg></span>
+        <h2>The two headers</h2>
+        <a class='anchor' href='#headers' aria-label='Link to The two headers'>#</a>
+      </div>
+      <hr>
+
+      <p class='note'>Housecall Pro signs a webhook and stamps it, and names both in headers. The gem holds the two names:</p>
+      <div class='snippet'><pre><code>Hcp::Event::SIGNATURE_HEADER # =&gt; 'Api-Signature'
+Hcp::Event::TIMESTAMP_HEADER # =&gt; 'Api-Timestamp'</code></pre></div>
+      <p class='note'>It holds the names and checks neither. Verifying the signature is the caller's, and belongs where the request arrives rather than where the payload is read.</p>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class='wrap'>
+    <p>Every method here carries a one-line description and a return type in the API reference, generated from the same source this page was written from.</p>
+    <div class='foot-links'>
+      <a class='btn' href='https://github.com/claudiob/hcp'><svg viewBox='0 0 16 16' aria-hidden='true' fill='currentColor'><path d='M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z'/></svg>The source</a>
+      <a class='btn' href='https://rubydoc.info/gems/hcp'><svg viewBox='0 0 16 16' aria-hidden='true' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linejoin='round' stroke-linecap='round'><path d='M8 4.2C6.6 2.9 4.5 2.6 2 3v9.6c2.5-.4 4.6-.1 6 1.2 1.4-1.3 3.5-1.6 6-1.2V3c-2.5-.4-4.6-.1-6 1.2z'/><path d='M8 4.2v10.6'/></svg>The reference</a>
+      <a class='btn mono' href='https://rubygems.org/gems/hcp'>gem install hcp</a>
+    </div>
+  </div>
+</footer>
+
+<script src='hcp.js'></script>
+</body>
+</html>
