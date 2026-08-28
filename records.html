@@ -53,7 +53,7 @@
 
 <main id='reference'>
   <div class='wrap'>
-    <p class='lede'>These are grouped on one page for the reason they belong together: not one of them is queryable. Each has a handful of readers and a single way in, so seven short sections read better than seven short pages.</p>
+    <p class='lede'>These are grouped on one page for the reason they belong together: not one of them is queryable. Each has a handful of readers and a single way in, so nine short sections read better than nine short pages.</p>
 
     <section id='how'>
       <div class='head'>
@@ -237,6 +237,52 @@ option.notes.map &amp;:content # =&gt; ['No phone (estimate $20-$50)']
 option.created_at       # =&gt; 2026-06-21 13:39:50 UTC
 option.updated_at       # =&gt; 2026-06-22 13:45:09 UTC</code></pre></div>
       <p class='note'>An option carries its own notes and its own tags, so two options on one estimate can be annotated apart. <a href='estimates.html#options'>The estimate page</a> shows them in context.</p>
+    </section>
+
+    <section id='companies'>
+      <div class='head'>
+        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-box'><path class='lid' d='M4.5 11 16 5.5 27.5 11'/><path d='M4.5 11v12L16 28.5 27.5 23V11'/><path d='M16 16.5v12'/><path d='M4.5 11 16 16.5 27.5 11'/></svg></span>
+        <h2>Companies</h2>
+        <a class='anchor' href='#companies' aria-label='Link to Companies'>#</a>
+      </div>
+      <hr>
+
+      <p class='note'>The account a key belongs to, and the settings every job it holds is booked under. <code class='inline'>Hcp::Company</code>. There is no list of companies and no ID to find one by &mdash; a key reads its own account and nothing else &mdash; so it is read with <code class='inline'>current</code> rather than with <code class='inline'>find</code> or <code class='inline'>where</code>.</p>
+      <div class='snippet'><pre><code>company = Hcp::Company.current
+
+company.id             # =&gt; '6513270e-269e-4d37-b2a7-4de452e6b438'
+company.name           # =&gt; 'Example Handyman Group HQ'
+company.phone          # =&gt; '(555) 555-0100'
+company.support_email  # =&gt; 'hq@example.com'
+company.website        # =&gt; 'https://example.com'
+company.logo_url       # =&gt; 'https://example.com/logos/hq.jpeg'
+company.time_zone      # =&gt; 'America/Los_Angeles'
+company.arrival_window # =&gt; 30, minutes
+company.address.city   # =&gt; 'Springfield'
+company.zip_codes      # =&gt; ['28278', '28213'], the ones the account travels to
+company.locations.map &amp;:name
+# =&gt; ['Example Handyman Group HQ', 'Example Handyman Region', 'Example Handyman - Springfield']</code></pre></div>
+      <p class='note'><code class='inline'>locations</code> is never empty: it is the account itself, then every location under it at any depth, in the order Housecall Pro lists them. A single company is its own one location, and a franchise reads flat however deep Housecall Pro nests it. Each location's <code class='inline'>id</code> is what <code class='inline'>company_id:</code> takes, here and everywhere else: <code class='inline'>Hcp::Company.current company_id: location.id</code> reads that location's own settings.</p>
+    </section>
+
+    <section id='booking-windows'>
+      <div class='head'>
+        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-clock'><circle cx='16' cy='17' r='11'/><path class='hand' d='M16 10v7h5'/><path d='M12 4h8'/></svg></span>
+        <h2>Booking windows</h2>
+        <a class='anchor' href='#booking-windows' aria-label='Link to Booking windows'>#</a>
+      </div>
+      <hr>
+
+      <p class='note'>When the account is free to be booked into, as its Online Booking settings answer it. <code class='inline'>Hcp::BookingWindow</code>. Housecall Pro hands this list back whole rather than a page at a time, so it comes back as an <code class='inline'>Array</code> rather than as a relation &mdash; there is nothing left to narrow, order or cut afterwards.</p>
+      <div class='snippet'><pre><code>windows = Hcp::BookingWindow.all starts_at: Date.tomorrow, days: 14, minutes: 90
+
+window = windows.first
+window.starts_at  # =&gt; 2026-08-29 08:00:00 UTC
+window.ends_at    # =&gt; 2026-08-29 09:30:00 UTC
+window.available? # =&gt; true
+
+windows.select(&amp;:available?).map { |window| [ window.starts_at, window.ends_at ] }</code></pre></div>
+      <p class='note'><code class='inline'>all</code> takes <code class='inline'>starts_at:</code>, <code class='inline'>days:</code>, <code class='inline'>minutes:</code>, <code class='inline'>service_id:</code>, <code class='inline'>price_form_id:</code>, <code class='inline'>employee_ids:</code> and <code class='inline'>company_id:</code>. Left out, <code class='inline'>starts_at</code> is the next day holding a free window and <code class='inline'>days</code> is seven; a window is cut to the service's own duration where <code class='inline'>service_id</code> names one, to <code class='inline'>minutes</code> where that is given, and to thirty minutes otherwise.</p>
     </section>
 
   </div>

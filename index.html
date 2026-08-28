@@ -27,7 +27,7 @@
   <div class='wrap'>
     <div class='hero-grid'>
       <div>
-        <p class='plate'><span class='rivet'></span>Ruby gem &middot; 1.3.0 &middot; MIT<span class='rivet'></span></p>
+        <p class='plate'><span class='rivet'></span>Ruby gem &middot; 1.4.0 &middot; MIT<span class='rivet'></span></p>
         <h1>hcp</h1>
         <p class='tagline'>A Ruby client for the Housecall Pro API.</p>
         <p class='sub'>Set a key once, name a location per call, and read a Housecall Pro account the way you read a database: <code class='inline'>where</code>, <code class='inline'>order</code>, <code class='inline'>limit</code>, <code class='inline'>includes</code>, <code class='inline'>find</code>. It needs the standard library and three files of Active Support, to tell a field Housecall Pro answered empty from one it never answered at all.</p>
@@ -80,7 +80,7 @@
 
 <main id='reference'>
   <div class='wrap'>
-    <p class='lede'>Every method in this gem is one Housecall Pro endpoint. Where Housecall Pro has no endpoint, this gem has no method &mdash; so a resource answers <code class='inline'>update</code> only where Housecall Pro takes a <code class='inline'>PUT</code>, and a job, which it takes none for, answers none. Version 1.3.0 reads. Writing &mdash; beyond the <a href='leads.html'>leads</a> that were here before it &mdash; comes next.</p>
+    <p class='lede'>Every method in this gem is one Housecall Pro endpoint. Where Housecall Pro has no endpoint, this gem has no method &mdash; so a resource answers <code class='inline'>update</code> only where Housecall Pro takes a <code class='inline'>PUT</code>, and a job, which it takes none for, answers none. Version 1.4.0 reads. Writing &mdash; beyond the <a href='leads.html'>leads</a> that were here before it &mdash; comes next.</p>
 
     <section id='install'>
       <div class='head'>
@@ -92,7 +92,7 @@
 
       <div class='snippet'><pre><code>gem install hcp</code></pre></div>
       <p class='note'>Or, in a Gemfile, pinned to the current major:</p>
-      <div class='snippet'><pre><code>gem 'hcp', '~&gt; 1.3'</code></pre></div>
+      <div class='snippet'><pre><code>gem 'hcp', '~&gt; 1.4'</code></pre></div>
       <p class='note'><code class='inline'>~&gt; major.minor</code> means <code class='inline'>bundle update</code> never crosses a breaking change. The gem asks for Ruby 3.2 or later, and for Active Support &mdash; three files of it, not the whole of it.</p>
     </section>
 
@@ -114,6 +114,11 @@ Hcp::Job.find 'job_77cbcb51acb1442fa9554131d7d1f543', company_id: company_id
 Hcp::Job.all(company_id: company_id).where work_status: :scheduled
 Hcp::Customer.count company_id: company_id</code></pre></div>
       <p class='note'>An account with one location passes nothing, and the gem sends no <code class='inline'>X-Company-Id</code> header at all.</p>
+      <p class='note'>A process serving several accounts hands each thread its own key for as long as a block runs, and is handed back the account that key opens. Neither thread sees the other's key, and the one set before the block comes back after it:</p>
+      <div class='snippet'><pre><code>Hcp.with_key(key, company_id: location_id) do |access|
+  access.account.name  # the location, as Hcp::Company.current would read it
+  Hcp::Job.limit 10    # every read inside the block is this key's
+end</code></pre></div>
     </section>
 
     <section id='reading'>
