@@ -4,7 +4,7 @@
 <meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'>
 <title>Jobs &mdash; hcp, a Ruby client for the Housecall Pro API</title>
-<meta name='description' content='Reading Housecall Pro jobs in Ruby with Hcp::Job: what a list may be narrowed, ordered and expanded by, and everything a job reads.'>
+<meta name='description' content='Reading Housecall Pro jobs in Ruby with Hcp::Job: the window a list is narrowed to, and everything a job reads, in the vocabulary of the company gem.'>
 <!-- All rendered from icon.svg by build-icons.sh; nothing on this page is fetched from anywhere else. -->
 <link rel='icon' href='icon.svg' type='image/svg+xml'>
 <link rel='icon' href='favicon-96x96.png' type='image/png' sizes='96x96'>
@@ -28,7 +28,7 @@
     <p class='plate'><span class='rivet'></span>Hcp::Job<span class='rivet'></span></p>
     <h1 class='page'>Jobs</h1>
     <p class='tagline'>Work a Housecall Pro user accepted: what it is, who it is for, and what it comes to.</p>
-    <p class='sub'>A job is read from the top, narrowed by six conditions, put in order of any of six columns, and handed back with its customer, its address, its notes and the pros it is assigned to already inside it.</p>
+    <p class='sub'>A job is walked off the account, a page at a time, within a window measured from now. It is handed back flat and in dollars, with its location and its customer already inside it, and it reaches its lines and its quote on the first ask.</p>
     <div class='actions'>
       <a class='btn' href='https://github.com/claudiob/hcp/blob/main/lib/hcp/resources/job.rb'><svg viewBox='0 0 16 16' aria-hidden='true' fill='currentColor'><path d='M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z'/></svg>The source</a>
       <a class='btn' href='https://rubydoc.info/gems/hcp'><svg viewBox='0 0 16 16' aria-hidden='true' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linejoin='round' stroke-linecap='round'><path d='M8 4.2C6.6 2.9 4.5 2.6 2 3v9.6c2.5-.4 4.6-.1 6 1.2 1.4-1.3 3.5-1.6 6-1.2V3c-2.5-.4-4.6-.1-6 1.2z'/><path d='M8 4.2v10.6'/></svg>The reference</a>
@@ -39,9 +39,7 @@
       <ul>
         <li><a href='index.html'>Overview</a></li>
         <li><a href='jobs.html' aria-current='page'>Jobs</a></li>
-        <li><a href='customers.html'>Customers</a></li>
-        <li><a href='estimates.html'>Estimates</a></li>
-        <li><a href='appointments.html'>Appointments</a></li>
+        <li><a href='visits.html'>Visits</a></li>
         <li><a href='records.html'>Records</a></li>
         <li><a href='leads.html'>Leads</a></li>
         <li><a href='events.html'>Events</a></li>
@@ -53,7 +51,7 @@
 
 <main id='reference'>
   <div class='wrap'>
-    <p class='lede'>A job is the busiest record Housecall Pro holds, and the one most of a Housecall Pro account hangs off. Everything on this page reads &mdash; the API takes no write for a job, so the gem has none.</p>
+    <p class='lede'>A job is the busiest record Housecall Pro holds, and the one most of a Housecall Pro account hangs off. This gem reads the part of it the <a href='https://github.com/claudiob/company'>company</a> vocabulary has a word for, and reads it the way every other adapter of the vocabulary does. Everything on this page reads &mdash; the API takes no write for a job, so the gem has none.</p>
 
     <section id='reading'>
       <div class='head'>
@@ -63,122 +61,42 @@
       </div>
       <hr>
 
-      <p class='note'><code class='inline'>Hcp::Job</code> is read from the top. Every entry point takes <code class='inline'>company_id:</code>, and every one but <code class='inline'>find</code>, <code class='inline'>first</code> and <code class='inline'>count</code> hands back a relation that has read nothing yet.</p>
-      <div class='snippet'><pre><code>Hcp::Job.all
-Hcp::Job.find 'job_77cbcb51acb1442fa9554131d7d1f543'
-Hcp::Job.first
-Hcp::Job.count  # =&gt; 3272
-Hcp::Job.limit 50
-Hcp::Job.order updated_at: :desc
-Hcp::Job.where work_status: :scheduled
-Hcp::Job.includes :appointments</code></pre></div>
-      <p class='note'>With a location named:</p>
-      <div class='snippet'><pre><code>company_id = '143e13ab-943d-483b-b9f9-14821c53c849'
+      <p class='note'>The jobs booked to start within a window are walked a page at a time, each read flat and in dollars however Housecall Pro nested it or counted it:</p>
+      <div class='snippet'><pre><code>account.jobs.past(4.weeks).each do |job|
+  job.id, job.description, job.created_at, job.scheduled_at, job.completed_at
+  job.notes             # =&gt; "- Gate code 1234\n- Dog in the yard", one to a line
+  job.amount            # =&gt; 330.0, dollars as a BigDecimal, where Housecall Pro said 33000
+  job.quote             # =&gt; an Hcp::Quote, the estimate option the job was created from, or nil
+  job.quote.amount      # =&gt; that option's total in dollars, found among the customer's estimates
+  job.location          # =&gt; an Hcp::Location, or nil where the job is booked nowhere
+  job.location.customer # =&gt; an Hcp::Customer: id, name, surname, email, phone
+  job.lines             # =&gt; Hcp::Line, read off the job's own line_items endpoint on first ask
+end</code></pre></div>
+      <p class='note'><code class='inline'>account.jobs</code> is <code class='inline'>Enumerable</code>, so everything Enumerable answers, it answers. Nothing is read until the walk starts, and a page &mdash; two hundred jobs, the most Housecall Pro hands over at once &mdash; only once the one before it runs out:</p>
+      <div class='snippet'><pre><code>account.jobs.past(4.weeks).map &amp;:description
+# =&gt; ['Exterior trim - Fascia repair', 'Water heater flush', 'Drain snake']
 
-Hcp::Job.find 'job_77cbcb51acb1442fa9554131d7d1f543', company_id: company_id
-Hcp::Job.all(company_id: company_id).order updated_at: :desc
-Hcp::Job.limit 50, company_id: company_id</code></pre></div>
-      <p class='note'>Housecall Pro files a job under an ID beginning <code class='inline'>job_</code>, and <code class='inline'>find</code> raises <a href='errors.html'>Hcp::NotFound</a> where it holds none.</p>
+account.jobs.past(4.weeks).first # =&gt; one job, or nil where none was booked
+account.jobs.past(4.weeks).ids   # =&gt; every ID, the list walked
+account.jobs.past(4.weeks).each  # =&gt; an Enumerator, where it is walked without a block</code></pre></div>
     </section>
 
-    <section id='narrowing'>
+    <section id='window'>
       <div class='head'>
-        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-funnel'><path d='M4.5 6h23L18.5 17v8.5l-5 3V17z'/><path class='drip' d='M16 29.5v-1.5'/></svg></span>
-        <h2>Narrowing a list of jobs</h2>
-        <a class='anchor' href='#narrowing' aria-label='Link to Narrowing a list of jobs'>#</a>
+        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-clock'><circle cx='16' cy='17' r='11'/><path class='hand' d='M16 10v7h5'/><path d='M12 4h8'/></svg></span>
+        <h2>The window</h2>
+        <a class='anchor' href='#window' aria-label='Link to The window'>#</a>
       </div>
       <hr>
 
-      <p class='note'>Six conditions, and nothing else. What Housecall Pro takes as two parameters &mdash; a floor and a ceiling &mdash; is written here as one range.</p>
-    <div class='spec-scroll'>
-      <table class='spec'>
-        <caption>Hcp::Job::FILTERS</caption>
-        <thead><tr><th scope='col'>Condition</th><th scope='col'>What Housecall Pro takes</th><th scope='col'>Value</th></tr></thead>
-        <tbody>
-          <tr><th scope='row' class='mono'>scheduled_at</th><td class='mono'>scheduled_start_min, scheduled_start_max</td><td class='mono'>one moment, or a range</td></tr>
-          <tr><th scope='row' class='mono'>ends_at</th><td class='mono'>scheduled_end_min, scheduled_end_max</td><td class='mono'>one moment, or a range</td></tr>
-          <tr><th scope='row' class='mono'>customer_id</th><td class='mono'>customer_id</td><td class='mono'>one ID</td></tr>
-          <tr><th scope='row' class='mono'>employee_ids</th><td class='mono'>employee_ids</td><td class='mono'>one, or several</td></tr>
-          <tr><th scope='row' class='mono'>work_status</th><td class='mono'>work_status</td><td class='mono'>one, or several</td></tr>
-          <tr><th scope='row' class='mono'>location_ids</th><td class='mono'>location_ids</td><td class='mono'>one, or several</td></tr>
-        </tbody>
-      </table>
-    </div>
-      <div class='snippet'><pre><code>Hcp::Job.where work_status: :scheduled
-Hcp::Job.where work_status: [ :scheduled, :in_progress ]
-Hcp::Job.where customer_id: 'cus_06411f4c8ede416ba55bfc0604fa4f2d'
-Hcp::Job.where employee_ids: 'pro_738721e93c12463ea2e756267f5a5fe7'
-Hcp::Job.where scheduled_at: 2.days.ago..
-Hcp::Job.where scheduled_at: 1.week.ago..Time.now
-Hcp::Job.where(customer_id: id).order(created_at: :asc).limit 10</code></pre></div>
-      <p class='note'>The last three of the six &mdash; <code class='inline'>employee_ids</code>, <code class='inline'>work_status</code> and <code class='inline'>location_ids</code> &mdash; are the ones Housecall Pro takes more than one of, so a single value is wrapped in an array on the way out and a bare string works as well as a list of them. That set is <code class='inline'>Hcp::Job::MANY</code>.</p>
-      <p class='note'>Chaining merges. Two calls to <code class='inline'>where</code> narrow by both, and the second wins where they name the same condition:</p>
-      <div class='snippet'><pre><code>Hcp::Job.where(work_status: :scheduled).where scheduled_at: 2.days.ago..</code></pre></div>
-      <p class='note'>A condition Housecall Pro does not take is refused before the request goes out, rather than ignored by Housecall Pro and answered with the whole account:</p>
-      <div class='snippet'><pre><code>Hcp::Job.where bogus: 1
-# =&gt; Hcp::Error: bogus is not one of: scheduled_at, ends_at, customer_id,
-#    employee_ids, work_status, location_ids</code></pre></div>
-    </section>
-
-    <section id='ordering'>
-      <div class='head'>
-        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-sort'><path d='M7 22.5l4.5 5 4.5-5'/><path class='arrow' d='M11.5 26.5V5'/><path d='M20 9h7'/><path d='M20 16h6'/><path d='M20 23h5'/></svg></span>
-        <h2>Ordering a list of jobs</h2>
-        <a class='anchor' href='#ordering' aria-label='Link to Ordering a list of jobs'>#</a>
-      </div>
-      <hr>
-
-      <p class='note'>Housecall Pro puts a list in order of one column, so <code class='inline'>order</code> takes one pair and a second call replaces the first rather than adding to it.</p>
-    <div class='spec-scroll'>
-      <table class='spec'>
-        <caption>Hcp::Job::SORTS</caption>
-        <thead><tr><th scope='col'>In order of</th><th scope='col'>Direction</th></tr></thead>
-        <tbody>
-          <tr><th scope='row' class='mono'>created_at</th><td class='mono'>:asc or :desc</td></tr>
-          <tr><th scope='row' class='mono'>updated_at</th><td class='mono'>:asc or :desc</td></tr>
-          <tr><th scope='row' class='mono'>invoice_number</th><td class='mono'>:asc or :desc</td></tr>
-          <tr><th scope='row' class='mono'>id</th><td class='mono'>:asc or :desc</td></tr>
-          <tr><th scope='row' class='mono'>description</th><td class='mono'>:asc or :desc</td></tr>
-          <tr><th scope='row' class='mono'>work_status</th><td class='mono'>:asc or :desc</td></tr>
-        </tbody>
-      </table>
-    </div>
-      <div class='snippet'><pre><code>Hcp::Job.order updated_at: :desc
-Hcp::Job.order invoice_number: :asc
-Hcp::Job.where(work_status: :scheduled).order(created_at: :asc).limit 25
-
-Hcp::Job.order bogus: :desc
-# =&gt; Hcp::Error: bogus is not one of: created_at, updated_at, invoice_number,
-#    id, description, work_status</code></pre></div>
-    </section>
-
-    <section id='expanding'>
-      <div class='head'>
-        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-box'><path class='lid' d='M4.5 11 16 5.5 27.5 11'/><path d='M4.5 11v12L16 28.5 27.5 23V11'/><path d='M16 16.5v12'/><path d='M4.5 11 16 16.5 27.5 11'/></svg></span>
-        <h2>Bringing more back</h2>
-        <a class='anchor' href='#expanding' aria-label='Link to Bringing more back'>#</a>
-      </div>
-      <hr>
-
-      <p class='note'>Nothing comes back unasked. <code class='inline'>includes</code> asks Housecall Pro for what it otherwise leaves out of a job.</p>
-    <div class='spec-scroll'>
-      <table class='spec'>
-        <caption>Hcp::Job::EXPANDS</caption>
-        <thead><tr><th scope='col'>Expansion</th><th scope='col'>What it brings back</th></tr></thead>
-        <tbody>
-          <tr><th scope='row' class='mono'>:appointments</th><td class='mono'>the visits, read off <code class='inline'>job.schedule.appointments</code></td></tr>
-          <tr><th scope='row' class='mono'>:attachments</th><td class='mono'>what is filed against the job</td></tr>
-        </tbody>
-      </table>
-    </div>
-      <p class='note'>A job read without the expansion carries no visits inside its schedule &mdash; none of them, rather than none at all:</p>
-      <div class='snippet'><pre><code>job = Hcp::Job.includes(:appointments).first
-job.schedule.appointments.map &amp;:starts_at
-# =&gt; [2026-06-26 10:45:00 UTC]
-
-Hcp::Job.first.schedule.appointments # =&gt; []</code></pre></div>
-      <p class='note'>That is one request for a page of jobs and their visits together. <a href='appointments.html'><code class='inline'>job.appointments</code></a> is the other way to the same records, and costs a request of its own for each job.</p>
-      <p class='note'>This release reads no attachments, so <code class='inline'>includes(:attachments)</code> asks for them and nothing on <code class='inline'>Hcp::Job</code> hands them back yet.</p>
+      <p class='note'>A list of jobs is narrowed to one thing: when the work is booked to start. <code class='inline'>past</code> looks back from now and <code class='inline'>upcoming</code> looks ahead, and each takes how far:</p>
+      <div class='snippet'><pre><code>account.jobs.past 4.weeks     # booked to start between four weeks ago and now
+account.jobs.upcoming 2.weeks # booked to start between now and two weeks on
+account.jobs.past             # booked to start any time up to now
+account.jobs.upcoming         # booked to start any time from now on</code></pre></div>
+      <p class='note'>Both ends are measured from one moment, so nothing slides between them. The two are sent as the two ends Housecall Pro takes, <code class='inline'>scheduled_start_min</code> and <code class='inline'>scheduled_start_max</code>, and an end left open is left out. Outside Rails, where <code class='inline'>4.weeks</code> is not a method, a number of seconds reads the same:</p>
+      <div class='snippet'><pre><code>account.jobs.past 2_419_200</code></pre></div>
+      <p class='note'>That is the whole of the narrowing. There is no condition on a customer, a pro or a status, no order, no limit and no reading of a job by its ID &mdash; the vocabulary has no word for them, and Housecall Pro is asked for exactly what the vocabulary reads.</p>
     </section>
 
     <section id='attributes'>
@@ -189,61 +107,43 @@ Hcp::Job.first.schedule.appointments # =&gt; []</code></pre></div>
       </div>
       <hr>
 
-      <div class='snippet'><pre><code>job = Hcp::Job.find 'job_77cbcb51acb1442fa9554131d7d1f543'
+      <div class='snippet'><pre><code>job = account.jobs.past(4.weeks).first
 
-job.id                   # =&gt; 'job_77cbcb51acb1442fa9554131d7d1f543'
-job.description          # =&gt; 'Exterior trim - Fascia repair'
-job.invoice_number       # =&gt; '51575153'
-job.lead_source          # =&gt; 'HouseAccount', or nil
-job.original_estimate_id # =&gt; the estimate the job was won with, or nil
-job.tags                 # =&gt; ['Warranty']</code></pre></div>
-      <p class='note'>Money, in dollars, as a <code class='inline'>BigDecimal</code> &mdash; Housecall Pro counts it in cents:</p>
-      <div class='snippet'><pre><code>job.subtotal            # =&gt; 0.33e3, a BigDecimal &mdash; $330.00
-job.total_amount        # =&gt; 0.33e3
-job.outstanding_balance # =&gt; 0.33e3</code></pre></div>
-      <p class='note'>Where Housecall Pro files the job in its own workflow. A rating is not a status, so it reads beside one rather than inside it:</p>
-      <div class='snippet'><pre><code>job.work_status # =&gt; :scheduled
-job.rated?      # =&gt; false</code></pre></div>
+job.id          # =&gt; 'job_77cbcb51acb1442fa9554131d7d1f543'
+job.description # =&gt; 'Exterior trim - Fascia repair'
+job.notes       # =&gt; "- Gate code 1234\n- Dog in the yard", or nil where none was written
+job.amount      # =&gt; 0.33e3, a BigDecimal &mdash; $330.00</code></pre></div>
     <div class='spec-scroll'>
       <table class='spec'>
         <caption>What Housecall Pro answers, and what the gem reads</caption>
-        <thead><tr><th scope='col'>Housecall Pro</th><th scope='col'>job.work_status</th><th scope='col'>job.rated?</th></tr></thead>
+        <thead><tr><th scope='col'>Reader</th><th scope='col'>Read off</th><th scope='col'>Reads</th></tr></thead>
         <tbody>
-          <tr><th scope='row' class='mono'>'needs scheduling'</th><td class='mono'>:unscheduled</td><td class='mono'>false</td></tr>
-          <tr><th scope='row' class='mono'>'scheduled'</th><td class='mono'>:scheduled</td><td class='mono'>false</td></tr>
-          <tr><th scope='row' class='mono'>'in progress'</th><td class='mono'>:in_progress</td><td class='mono'>false</td></tr>
-          <tr><th scope='row' class='mono'>'complete rated'</th><td class='mono'>:completed</td><td class='mono'>true</td></tr>
-          <tr><th scope='row' class='mono'>'complete unrated'</th><td class='mono'>:completed</td><td class='mono'>false</td></tr>
-          <tr><th scope='row' class='mono'>'user canceled'</th><td class='mono'>:canceled</td><td class='mono'>false</td></tr>
-          <tr><th scope='row' class='mono'>'pro canceled'</th><td class='mono'>:canceled</td><td class='mono'>false</td></tr>
+          <tr><th scope='row' class='mono'>id</th><td class='mono'>id</td><td class='mono'>the ID Housecall Pro files the job under</td></tr>
+          <tr><th scope='row' class='mono'>description</th><td class='mono'>description</td><td class='mono'>what the work is called</td></tr>
+          <tr><th scope='row' class='mono'>notes</th><td class='mono'>notes[].content</td><td class='mono'>every note, <code class='inline'>- </code> before each, one to a line, or nil</td></tr>
+          <tr><th scope='row' class='mono'>amount</th><td class='mono'>total_amount</td><td class='mono'>what the job comes to, in dollars, or nil</td></tr>
+          <tr><th scope='row' class='mono'>created_at</th><td class='mono'>created_at</td><td class='mono'>when the job was opened</td></tr>
+          <tr><th scope='row' class='mono'>scheduled_at</th><td class='mono'>schedule.scheduled_start</td><td class='mono'>when the work is booked for, or nil</td></tr>
+          <tr><th scope='row' class='mono'>completed_at</th><td class='mono'>work_timestamps.completed_at</td><td class='mono'>when the work was finished, or nil</td></tr>
         </tbody>
       </table>
     </div>
+      <p class='note'>Housecall Pro counts money in cents. This gem reads it in dollars, as a <code class='inline'>BigDecimal</code>, so nothing rounds on the way through. Housecall Pro files the notes on a job one by one, and a caller wants the notes: they read as one string, one to a line, and as <code class='inline'>nil</code> where none was written.</p>
     </section>
 
     <section id='times'>
       <div class='head'>
-        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-clock'><circle cx='16' cy='17' r='11'/><path class='hand' d='M16 10v7h5'/><path d='M12 4h8'/></svg></span>
+        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-calendar'><rect x='4.5' y='7' width='23' height='20' rx='2.5'/><path d='M4.5 13h23'/><path d='M11 4.5v5'/><path d='M21 4.5v5'/></svg></span>
         <h2>When the work happens</h2>
         <a class='anchor' href='#times' aria-label='Link to When the work happens'>#</a>
       </div>
       <hr>
 
-      <p class='note'>When the job is booked for, read off its schedule, and the moments Housecall Pro stamps as the work actually happens:</p>
-      <div class='snippet'><pre><code>job.schedule.starts_at       # =&gt; 2026-06-26 10:45:00 UTC
-job.schedule.ends_at         # =&gt; 2026-06-26 12:45:00 UTC
-job.schedule.time_zone       # =&gt; 'America/New_York'
-job.schedule.arrival_window  # =&gt; 30, minutes
-
-job.on_my_way_at # =&gt; when the pro said they were on their way, or nil
-job.started_at   # =&gt; when the work started, or nil
-job.completed_at # =&gt; when the work was finished, or nil
-
-job.created_at   # =&gt; 2026-06-21 13:45:35 UTC
-job.updated_at   # =&gt; 2026-06-21 13:45:36 UTC
-job.locked_at    # =&gt; when the job was locked against further changes, or nil
-job.canceled_at  # =&gt; when the customer canceled the job, or nil</code></pre></div>
-      <p class='note'>Every moment is a <code class='inline'>Time</code> in UTC, or <code class='inline'>nil</code> where Housecall Pro has stamped none. <code class='inline'>job.schedule</code> is itself <code class='inline'>nil</code> on a job that has never been booked, so reach for it the way you would any other record that may not be there.</p>
+      <p class='note'>Housecall Pro nests when the work is booked under a schedule and when it was done under its timestamps. The job reads both flat, the way the vocabulary reads one:</p>
+      <div class='snippet'><pre><code>job.created_at   # =&gt; 2026-06-21 13:45:35 UTC
+job.scheduled_at # =&gt; 2026-06-26 10:45:00 UTC, or nil on a job that has never been booked
+job.completed_at # =&gt; 2026-06-26 12:45:00 UTC, or nil on a job that is not finished</code></pre></div>
+      <p class='note'>Every moment is a <code class='inline'>Time</code> in UTC, or <code class='inline'>nil</code> where Housecall Pro has stamped none. The trips it takes to do the work are <a href='visits.html'>visits</a>, and have a page of their own.</p>
     </section>
 
     <section id='nested'>
@@ -254,22 +154,26 @@ job.canceled_at  # =&gt; when the customer canceled the job, or nil</code></pre>
       </div>
       <hr>
 
-      <p class='note'>Four of these arrive inside the job Housecall Pro already answered with, so reading them costs nothing more:</p>
-      <div class='snippet'><pre><code>job.customer.name  # =&gt; 'Ada'
-job.customer.email # =&gt; 'ada@example.com'
-job.address.type   # =&gt; :service
-job.address.city   # =&gt; 'Springfield'
-job.notes.map &amp;:content             # =&gt; ['Gate code is 4021']
-job.assigned_employees.map &amp;:name   # =&gt; ['Ada Example']</code></pre></div>
-      <p class='note'>Three are lists Housecall Pro keeps under the job, and each is a relation of its own &mdash; one request, walked lazily:</p>
-      <div class='snippet'><pre><code>job.appointments.count     # =&gt; 1
-job.appointments.first.starts_at # =&gt; 2026-06-26 10:45:00 UTC
+      <p class='note'>Housecall Pro files the address and the customer side by side under the job. The vocabulary reads a location, whose place it is beside it, so the two arrive inside the job already answered and cost nothing more:</p>
+      <div class='snippet'><pre><code>job.location.street        # =&gt; '1 Example Street'
+job.location.city          # =&gt; 'Springfield'
+job.location.zip           # =&gt; '90210'
+job.location.latitude      # =&gt; 34.0
+job.location.longitude     # =&gt; -118.0
 
-job.line_items.map &amp;:name  # =&gt; ['Exterior trim - Fascia repair']
-job.line_items.sum &amp;:amount # =&gt; 0.33e3
+job.location.customer.name    # =&gt; 'Ada'
+job.location.customer.surname # =&gt; 'Lovelace'
+job.location.customer.email   # =&gt; 'ada@example.com'
+job.location.customer.phone   # =&gt; '5550000001'</code></pre></div>
+      <p class='note'><code class='inline'>location</code> is <code class='inline'>nil</code> where the job is booked nowhere, so reach for it the way you would any other record that may not be there. A customer's <code class='inline'>name</code> is their first name, or the business's where a person has none, and their <code class='inline'>phone</code> is the first of the mobile, home and work numbers that can be dialed, as ten digits.</p>
+      <p class='note'>Two more live elsewhere on Housecall Pro, and are read once, on the first ask:</p>
+      <div class='snippet'><pre><code>job.lines.map &amp;:name     # =&gt; ['Exterior trim - Fascia repair'], one request
+job.lines.sum &amp;:amount   # =&gt; 0.33e3, and no second request
 
-job.invoices.map &amp;:invoice_number # =&gt; ['51575153']</code></pre></div>
-      <p class='note'>Housecall Pro takes no conditions on any of these three, so they walk, count, limit and <code class='inline'>find</code> by ID, and they do not <code class='inline'>where</code>. Each record is documented on <a href='appointments.html'>the appointments page</a> and <a href='records.html'>the records page</a>.</p>
+job.quote                # =&gt; an Hcp::Quote, or nil where the job was won without one
+job.quote.id             # =&gt; 'est_7e935e461264420eb5d6d5421558d9a3', already in hand
+job.quote.amount         # =&gt; 0.145e4, one request, found among the customer's estimates</code></pre></div>
+      <p class='note'>Housecall Pro files a job's lines under their own endpoint rather than beside the job, so <code class='inline'>lines</code> is one request per job and an array afterwards. It names the estimate option a job was created from beside the job and prices it only among the customer's estimates, so <code class='inline'>quote.amount</code> is one request per quote, and <code class='inline'>nil</code> where the option is not found there. Each record is documented on <a href='records.html'>the records page</a>.</p>
     </section>
 
     <section id='writing'>
@@ -281,6 +185,7 @@ job.invoices.map &amp;:invoice_number # =&gt; ['51575153']</code></pre></div>
       <hr>
 
       <p class='note'>Housecall Pro takes no <code class='inline'>PUT</code>, <code class='inline'>POST</code> or <code class='inline'>DELETE</code> for a job, so <code class='inline'>Hcp::Job</code> has no <code class='inline'>create</code>, no <code class='inline'>update</code> and no <code class='inline'>destroy</code>. It reads. The only two writes the gem has are on <a href='leads.html'>leads</a>.</p>
+      <p class='note'>Nor is a job read by its ID. A webhook that names one, as <a href='events.html'>an event</a> does, names what happened; the job itself comes round in <code class='inline'>account.jobs</code> when its window does.</p>
     </section>
 
   </div>

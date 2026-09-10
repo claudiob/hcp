@@ -1,7 +1,7 @@
 {
   "name": "hcp — a Ruby client for the Housecall Pro API",
   "short_name": "hcp",
-  "description": "Every method is one Housecall Pro endpoint: jobs, estimates, customers and appointments, read from Ruby.",
+  "description": "An account, its business, its jobs, its visits and its leads, read from Housecall Pro in Ruby.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

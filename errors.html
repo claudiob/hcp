@@ -4,7 +4,7 @@
 <meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'>
 <title>Errors &mdash; hcp, a Ruby client for the Housecall Pro API</title>
-<meta name='description' content='What the hcp gem raises and when: Hcp::Error, Hcp::NotFound, Hcp::TooManyRequests, and the conditions refused before a request goes out.'>
+<meta name='description' content='What the hcp gem raises and when: Hcp::Error and Hcp::Throttled, both descending from the company gem, so one rescue covers every platform.'>
 <!-- All rendered from icon.svg by build-icons.sh; nothing on this page is fetched from anywhere else. -->
 <link rel='icon' href='icon.svg' type='image/svg+xml'>
 <link rel='icon' href='favicon-96x96.png' type='image/png' sizes='96x96'>
@@ -28,7 +28,7 @@
     <p class='plate'><span class='rivet'></span>Hcp::Error<span class='rivet'></span></p>
     <h1 class='page'>Errors</h1>
     <p class='tagline'>Raised where Housecall Pro would not answer.</p>
-    <p class='sub'>Three classes, one of them the parent of the other two, so one rescue catches everything the gem raises. And a handful of refusals that never reach the network at all.</p>
+    <p class='sub'>Two classes, both descending from the <a href='https://github.com/claudiob/company'>company</a> gem's own, so one rescue catches everything this gem raises and the same rescue covers every other platform the vocabulary is answered for.</p>
     <div class='actions'>
       <a class='btn' href='https://github.com/claudiob/hcp/blob/main/lib/hcp/error.rb'><svg viewBox='0 0 16 16' aria-hidden='true' fill='currentColor'><path d='M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z'/></svg>The source</a>
       <a class='btn' href='https://rubydoc.info/gems/hcp'><svg viewBox='0 0 16 16' aria-hidden='true' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linejoin='round' stroke-linecap='round'><path d='M8 4.2C6.6 2.9 4.5 2.6 2 3v9.6c2.5-.4 4.6-.1 6 1.2 1.4-1.3 3.5-1.6 6-1.2V3c-2.5-.4-4.6-.1-6 1.2z'/><path d='M8 4.2v10.6'/></svg>The reference</a>
@@ -39,9 +39,7 @@
       <ul>
         <li><a href='index.html'>Overview</a></li>
         <li><a href='jobs.html'>Jobs</a></li>
-        <li><a href='customers.html'>Customers</a></li>
-        <li><a href='estimates.html'>Estimates</a></li>
-        <li><a href='appointments.html'>Appointments</a></li>
+        <li><a href='visits.html'>Visits</a></li>
         <li><a href='records.html'>Records</a></li>
         <li><a href='leads.html'>Leads</a></li>
         <li><a href='events.html'>Events</a></li>
@@ -53,36 +51,55 @@
 
 <main id='reference'>
   <div class='wrap'>
-    <p class='lede'>Two kinds of refusal live here: the ones Housecall Pro sends back, and the ones the gem raises before a request goes out because Housecall Pro would have answered them with the wrong thing.</p>
+    <p class='lede'>A refusal is Housecall Pro's to send, and the gem's only job is to hand it over in words a caller can act on: one class for everything, one for the refusal that is worth retrying, and both named in the vocabulary rather than in this platform's.</p>
 
-    <section id='three'>
+    <section id='two'>
       <div class='head'>
         <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-alert'><path d='M16 5 29 27H3z'/><path d='M16 13v7'/><circle cx='16' cy='23.5' r='1'/></svg></span>
-        <h2>Three classes, one rescue</h2>
-        <a class='anchor' href='#three' aria-label='Link to Three classes, one rescue'>#</a>
+        <h2>Two classes, one rescue</h2>
+        <a class='anchor' href='#two' aria-label='Link to Two classes, one rescue'>#</a>
       </div>
       <hr>
 
-      <p class='note'>Everything this gem raises descends from <code class='inline'>Hcp::Error</code>, so one rescue still catches the lot &mdash; including anything a later release adds.</p>
+      <p class='note'>Everything this gem raises descends from <code class='inline'>Hcp::Error</code>, which descends from <code class='inline'>Company::Error</code>, so one rescue still catches the lot &mdash; including anything a later release adds.</p>
     <div class='spec-scroll'>
       <table class='spec'>
         <caption>What the gem raises</caption>
         <thead><tr><th scope='col'>Class</th><th scope='col'>Descends from</th><th scope='col'>Raised where</th></tr></thead>
         <tbody>
-          <tr><th scope='row' class='mono'>Hcp::Error</th><td class='mono'>StandardError</td><td class='mono'>Housecall Pro would not answer</td></tr>
-          <tr><th scope='row' class='mono'>Hcp::NotFound</th><td class='mono'>Hcp::Error</td><td class='mono'>Housecall Pro has no record under that ID</td></tr>
-          <tr><th scope='row' class='mono'>Hcp::TooManyRequests</th><td class='mono'>Hcp::Error</td><td class='mono'>Housecall Pro refused the request for rate</td></tr>
+          <tr><th scope='row' class='mono'>Hcp::Error</th><td class='mono'>Company::Error</td><td class='mono'>Housecall Pro would not answer</td></tr>
+          <tr><th scope='row' class='mono'>Hcp::Throttled</th><td class='mono'>Company::Throttled</td><td class='mono'>Housecall Pro refused the request for rate</td></tr>
         </tbody>
       </table>
     </div>
       <div class='snippet'><pre><code>begin
-  Hcp::Job.find 'job_nope'
-rescue Hcp::NotFound
-  nil
+  account.jobs.past(4.weeks).each { |job| puts job.description }
+rescue Hcp::Throttled
+  # the same question, asked a little later, is answered
 rescue Hcp::Error =&gt; error
   error.message # =&gt; what Housecall Pro said
 end</code></pre></div>
-      <p class='note'>Housecall Pro writes a refusal three ways &mdash; the message under an <code class='inline'>error</code>, the message as the <code class='inline'>error</code>, and the message on its own. All three read as <code class='inline'>error.message</code>.</p>
+      <p class='note'><code class='inline'>Company::Throttled</code> is itself a <code class='inline'>Company::Error</code>, so the order matters: the narrow one first, and the wide one after it, the way any two rescues are written.</p>
+      <p class='note'>Housecall Pro writes a refusal three ways &mdash; the message under an <code class='inline'>error</code>, the message as the <code class='inline'>error</code>, and the message on its own. All three read as <code class='inline'>error.message</code>. A connection Housecall Pro will not take is turned into the same class as a request it will not answer, so a caller has one thing to rescue rather than two.</p>
+    </section>
+
+    <section id='vocabulary'>
+      <div class='head'>
+        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-box'><path class='lid' d='M4.5 11 16 5.5 27.5 11'/><path d='M4.5 11v12L16 28.5 27.5 23V11'/><path d='M16 16.5v12'/><path d='M4.5 11 16 16.5 27.5 11'/></svg></span>
+        <h2>Rescued as a platform, or as any platform</h2>
+        <a class='anchor' href='#vocabulary' aria-label='Link to Rescued as a platform, or as any platform'>#</a>
+      </div>
+      <hr>
+
+      <p class='note'>Both classes have a parent in the <code class='inline'>company</code> gem, which is the point of them. Code that speaks to Housecall Pro alone rescues <code class='inline'>Hcp::Error</code>. Code that speaks to whatever platform an account happens to be on rescues <code class='inline'>Company::Error</code>, and the retry it writes for a refusal for rate is written once:</p>
+      <div class='snippet'><pre><code>begin
+  account.jobs.past(4.weeks).each { |job| record job }
+rescue Company::Throttled
+  retry_later
+rescue Company::Error =&gt; error
+  report error.message
+end</code></pre></div>
+      <p class='note'>hcp is one adapter of that vocabulary. A refusal for rate means the same thing here as it does anywhere else it is answered, which is why it is a <code class='inline'>Company::Throttled</code> rather than an error of this gem's own.</p>
     </section>
 
     <section id='rate'>
@@ -93,48 +110,13 @@ end</code></pre></div>
       </div>
       <hr>
 
-      <p class='note'><code class='inline'>Hcp::TooManyRequests</code> carries the moment the limit lifts, where Housecall Pro named one in its <code class='inline'>RateLimit-Reset</code> header:</p>
+      <p class='note'><code class='inline'>Hcp::Throttled</code> is what Housecall Pro answering <code class='inline'>429</code> becomes. It is a refusal for rate and nothing else: the same question, asked a little later, is answered.</p>
       <div class='snippet'><pre><code>begin
-  Hcp::Job.all.each { |job| puts job.description }
-rescue Hcp::TooManyRequests =&gt; error
-  error.reset_at # =&gt; 2026-08-25 18:40:00 UTC, or nil
+  account.visits.upcoming(2.weeks).each { |visit| dispatch visit }
+rescue Hcp::Throttled =&gt; error
+  error.message # =&gt; what Housecall Pro said
 end</code></pre></div>
-      <p class='note'>Nothing here sleeps. A caller told to come back later has a queue that can bring the whole job back, which is worth more than a worker asleep holding a connection open. Reschedule on <code class='inline'>reset_at</code>, and where it is <code class='inline'>nil</code>, on whatever your queue's backoff would have chosen anyway.</p>
-    </section>
-
-    <section id='refused'>
-      <div class='head'>
-        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-ban'><circle cx='16' cy='16' r='11'/><path d='M8.2 8.2 23.8 23.8'/></svg></span>
-        <h2>Refused before it is sent</h2>
-        <a class='anchor' href='#refused' aria-label='Link to Refused before it is sent'>#</a>
-      </div>
-      <hr>
-
-      <p class='note'>Housecall Pro answers a condition it does not take by ignoring it and handing back the whole account. That is a plausible wrong answer, which is the worst kind, so the gem refuses one here where it can still be named. Every message below is raised without a request going out.</p>
-      <p class='note'>A condition, an order or an expansion the resource does not have:</p>
-      <div class='snippet'><pre><code>Hcp::Job.where bogus: 1
-# =&gt; Hcp::Error: bogus is not one of: scheduled_at, ends_at, customer_id,
-#    employee_ids, work_status, location_ids
-
-Hcp::Job.order bogus: :desc
-# =&gt; Hcp::Error: bogus is not one of: created_at, updated_at, invoice_number,
-#    id, description, work_status
-
-Hcp::Job.includes :bogus
-# =&gt; Hcp::Error: bogus is not one of: attachments, appointments
-
-Hcp::Customer.where email: 'ada@example.com'
-# =&gt; Hcp::Error: email is not one of: q, location_ids</code></pre></div>
-      <p class='note'>A name is refused as the chain is built. A range is refused as the list is read, since that is when it is turned into parameters &mdash; still before the request goes out, and still by name.</p>
-      <p class='note'>A range where Housecall Pro takes one value, because there is no second parameter to send the other end as:</p>
-      <div class='snippet'><pre><code>Hcp::Customer.where(q: 'a'..'z').first
-# =&gt; Hcp::Error: q takes one value, not a range</code></pre></div>
-      <p class='note'>A range that excludes its end. Housecall Pro reads both ends inclusively, so the record on the boundary would come back anyway and the range would have promised something it did not do:</p>
-      <div class='snippet'><pre><code>Hcp::Job.where(scheduled_at: 1.week.ago...Time.now).first
-# =&gt; Hcp::Error: scheduled_start_max cannot exclude its end
-
-Hcp::Job.where scheduled_at: 1.week.ago...   # fine: no end to exclude</code></pre></div>
-      <p class='note'>What each resource may be narrowed, ordered and expanded by is on its own page: <a href='jobs.html#narrowing'>jobs</a>, <a href='customers.html#narrowing'>customers</a>, <a href='estimates.html#narrowing'>estimates</a>.</p>
+      <p class='note'>Nothing here sleeps. A caller told to come back later has a queue that can bring the whole job back, which is worth more than a worker asleep holding a connection open. Reschedule on whatever your queue's backoff would have chosen.</p>
     </section>
 
     <section id='writes'>
@@ -145,29 +127,31 @@ Hcp::Job.where scheduled_at: 1.week.ago...   # fine: no end to exclude</code></p
       </div>
       <hr>
 
-      <p class='note'><a href='leads.html'>Leads</a> raise the same <code class='inline'>Hcp::Error</code>, and raise it for one more reason: a connection Housecall Pro will not take. Both <code class='inline'>Hcp::Lead#create</code> and <code class='inline'>Hcp::Lead::Pipeline#update</code> turn a refused connection into the same class as a refused request, so a caller has one thing to rescue rather than two:</p>
+      <p class='note'><a href='leads.html'>Leads</a> go out through the same plumbing the reads do, so they raise the same classes for the same reasons, and one more of the gem's own: a status the account has no word for. Rather than move the lead somewhere unintended, the gem refuses by name:</p>
       <div class='snippet'><pre><code>begin
-  Hcp::Lead::Pipeline.new(id: id, key: key, company_id: company_id).
-    update status_name: 'Won'
+  account.leads.find('lea_1').update status_name: 'Won'
 rescue Hcp::Error =&gt; error
   error.message
-  # =&gt; 'Status Won not found for lead lea_9f0a1c8d2b4e4f0f8c1d2e3f4a5b6c7d'
+  # =&gt; 'Status Won not found for lead lea_1'
 end</code></pre></div>
+      <p class='note'>That is the one message this gem writes itself. Every other one is Housecall Pro's, handed over as it was written.</p>
     </section>
 
     <section id='not'>
       <div class='head'>
-        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-box'><path class='lid' d='M4.5 11 16 5.5 27.5 11'/><path d='M4.5 11v12L16 28.5 27.5 23V11'/><path d='M16 16.5v12'/><path d='M4.5 11 16 16.5 27.5 11'/></svg></span>
+        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-ban'><circle cx='16' cy='16' r='11'/><path d='M8.2 8.2 23.8 23.8'/></svg></span>
         <h2>What is not an error</h2>
         <a class='anchor' href='#not' aria-label='Link to What is not an error'>#</a>
       </div>
       <hr>
 
       <p class='note'>A record Housecall Pro holds nothing for is not a refusal. A field it never answered reads as <code class='inline'>nil</code>, a list it never answered reads as <code class='inline'>[]</code>, and neither raises:</p>
-      <div class='snippet'><pre><code>Hcp::Job.first.completed_at # =&gt; nil, on a job that is not finished
-Hcp::Job.first.tags         # =&gt; [], on a job that is tagged with nothing
-Hcp::Customer.where(q: 'nobody').first # =&gt; nil, where the search matched none</code></pre></div>
-      <p class='note'><code class='inline'>find</code> is the one that raises, because an ID names a record a caller believes exists. A search that matches nothing simply matched nothing.</p>
+      <div class='snippet'><pre><code>job.completed_at # =&gt; nil, on a job that is not finished
+job.location     # =&gt; nil, on a job booked nowhere
+job.quote        # =&gt; nil, on a job won without one
+job.lines        # =&gt; [], where Housecall Pro has none filed
+account.jobs.past(4.weeks).first # =&gt; nil, where nothing was booked in the window</code></pre></div>
+      <p class='note'>There is no <code class='inline'>Hcp::NotFound</code> any more, because nothing here is read by an ID a caller supplies: a job comes round in a window and a lead is named rather than looked up. Where Housecall Pro answers <code class='inline'>404</code> anyway, that is an <code class='inline'>Hcp::Error</code> like any other refusal it sends.</p>
     </section>
 
   </div>

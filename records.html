@@ -4,7 +4,7 @@
 <meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'>
 <title>Records &mdash; hcp, a Ruby client for the Housecall Pro API</title>
-<meta name='description' content='The Housecall Pro records reached only through a parent: addresses, employees, schedules, line items, notes, invoices and estimate options.'>
+<meta name='description' content='The Housecall Pro records reached only through a parent: the business a key belongs to, and the location, customer, lines and quote a job carries.'>
 <!-- All rendered from icon.svg by build-icons.sh; nothing on this page is fetched from anywhere else. -->
 <link rel='icon' href='icon.svg' type='image/svg+xml'>
 <link rel='icon' href='favicon-96x96.png' type='image/png' sizes='96x96'>
@@ -25,10 +25,10 @@
 
 <header class='hero slim'>
   <div class='wrap'>
-    <p class='plate'><span class='rivet'></span>Hcp::Address and six others<span class='rivet'></span></p>
+    <p class='plate'><span class='rivet'></span>Hcp::Business and four others<span class='rivet'></span></p>
     <h1 class='page'>Records</h1>
     <p class='tagline'>The records a parent hands back, already read.</p>
-    <p class='sub'>Seven classes that Housecall Pro answers with but never answers for. None is read from the top, none takes a condition, and none writes &mdash; each is reached through the job, customer or estimate that holds it.</p>
+    <p class='sub'>Five classes that Housecall Pro answers with but never answers a list of. None is read from the top and none writes: the business comes off the account, and the location, the customer, the lines and the quote come off a job.</p>
     <div class='actions'>
       <a class='btn' href='https://github.com/claudiob/hcp/blob/main/lib/hcp/resources'><svg viewBox='0 0 16 16' aria-hidden='true' fill='currentColor'><path d='M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z'/></svg>The source</a>
       <a class='btn' href='https://rubydoc.info/gems/hcp'><svg viewBox='0 0 16 16' aria-hidden='true' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linejoin='round' stroke-linecap='round'><path d='M8 4.2C6.6 2.9 4.5 2.6 2 3v9.6c2.5-.4 4.6-.1 6 1.2 1.4-1.3 3.5-1.6 6-1.2V3c-2.5-.4-4.6-.1-6 1.2z'/><path d='M8 4.2v10.6'/></svg>The reference</a>
@@ -39,9 +39,7 @@
       <ul>
         <li><a href='index.html'>Overview</a></li>
         <li><a href='jobs.html'>Jobs</a></li>
-        <li><a href='customers.html'>Customers</a></li>
-        <li><a href='estimates.html'>Estimates</a></li>
-        <li><a href='appointments.html'>Appointments</a></li>
+        <li><a href='visits.html'>Visits</a></li>
         <li><a href='records.html' aria-current='page'>Records</a></li>
         <li><a href='leads.html'>Leads</a></li>
         <li><a href='events.html'>Events</a></li>
@@ -53,7 +51,7 @@
 
 <main id='reference'>
   <div class='wrap'>
-    <p class='lede'>These are grouped on one page for the reason they belong together: not one of them is queryable. Each has a handful of readers and a single way in, so nine short sections read better than nine short pages.</p>
+    <p class='lede'>These are grouped on one page for the reason they belong together: not one of them is a list of its own. Each has a handful of readers and a single way in, so five short sections read better than five short pages.</p>
 
     <section id='how'>
       <div class='head'>
@@ -63,226 +61,127 @@
       </div>
       <hr>
 
-      <p class='note'>Seven records, and not one of them is read from the top. None extends <code class='inline'>Queryable</code>, none has a path of its own, and none answers <code class='inline'>all</code>, <code class='inline'>where</code> or <code class='inline'>find</code>. Each is only ever handed back by a parent, which is why they share a page rather than each having one with four readers on it.</p>
-      <p class='note'>Two kinds of parent hand them over. Some arrive inside the answer Housecall Pro already sent, and cost nothing more to read. Others are a list Housecall Pro keeps under the parent, and are a relation of their own &mdash; one request, walked lazily, countable, and findable by ID.</p>
+      <p class='note'>Five records, and not one of them is read from the top. None has a list of its own, none takes a window, and none answers <code class='inline'>find</code>. Each is only ever handed back by a parent, which is why they share a page rather than each having one with four readers on it.</p>
+      <p class='note'>Two kinds of parent hand them over. Some arrive inside the answer Housecall Pro already sent, and cost nothing more to read. Others live at an endpoint of their own, and are read once, on the first ask, and held afterwards.</p>
     <div class='spec-scroll'>
       <table class='spec'>
         <caption>Where each one comes from</caption>
         <thead><tr><th scope='col'>Record</th><th scope='col'>Reached by</th><th scope='col'>What you get</th></tr></thead>
         <tbody>
-          <tr><th scope='row' class='mono'>Hcp::Address</th><td><a href='customers.html'>customer.addresses</a></td><td class='mono'>a relation</td></tr>
-          <tr><th scope='row' class='mono'>Hcp::Address</th><td><a href='jobs.html'>job.address</a>, estimate.address</td><td class='mono'>one record, already read</td></tr>
-          <tr><th scope='row' class='mono'>Hcp::Employee</th><td class='mono'>job.assigned_employees, estimate.assigned_employees</td><td class='mono'>an array, already read</td></tr>
-          <tr><th scope='row' class='mono'>Hcp::Schedule</th><td class='mono'>job.schedule, estimate.schedule</td><td class='mono'>one record, already read</td></tr>
-          <tr><th scope='row' class='mono'>Hcp::LineItem</th><td class='mono'>job.line_items</td><td class='mono'>a relation</td></tr>
-          <tr><th scope='row' class='mono'>Hcp::Note</th><td class='mono'>job.notes, option.notes</td><td class='mono'>an array, already read</td></tr>
-          <tr><th scope='row' class='mono'>Hcp::Job::Invoice</th><td class='mono'>job.invoices</td><td class='mono'>a relation</td></tr>
-          <tr><th scope='row' class='mono'>Hcp::Estimate::Option</th><td><a href='estimates.html'>estimate.options</a></td><td class='mono'>an array, already read</td></tr>
+          <tr><th scope='row' class='mono'>Hcp::Business</th><td><a href='index.html#business'>account.business</a></td><td class='mono'>one record, one request</td></tr>
+          <tr><th scope='row' class='mono'>Hcp::Location</th><td><a href='jobs.html#nested'>job.location</a></td><td class='mono'>one record, already read</td></tr>
+          <tr><th scope='row' class='mono'>Hcp::Customer</th><td class='mono'>job.location.customer</td><td class='mono'>one record, already read</td></tr>
+          <tr><th scope='row' class='mono'>Hcp::Line</th><td class='mono'>job.lines</td><td class='mono'>an array, one request on the first ask</td></tr>
+          <tr><th scope='row' class='mono'>Hcp::Quote</th><td class='mono'>job.quote</td><td class='mono'>one record, its amount one request</td></tr>
         </tbody>
       </table>
     </div>
-      <p class='note'>Every one of them reads <code class='inline'>id</code>, which is the ID Housecall Pro files the record under. None of them writes.</p>
+      <p class='note'>Every one of them reads <code class='inline'>id</code>, which is the ID Housecall Pro files the record under. None of them writes. A <a href='leads.html'>lead</a> hands back a customer of its own, which is the same <code class='inline'>Hcp::Customer</code> read from a lead rather than from a job.</p>
     </section>
 
-    <section id='addresses'>
+    <section id='business'>
+      <div class='head'>
+        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-house'><path d='M5 15 16 5l11 10'/><path d='M8 13v14h16V13'/><path d='M13 27v-8h6v8'/></svg></span>
+        <h2>The business</h2>
+        <a class='anchor' href='#business' aria-label='Link to The business'>#</a>
+      </div>
+      <hr>
+
+      <p class='note'>Who the account belongs to: the one business behind a key, as the location it acts as. <code class='inline'>Hcp::Business</code>. There is no list of businesses and no ID to find one by &mdash; a key reads its own, and nothing else.</p>
+      <div class='snippet'><pre><code>business = account.business
+
+business.id           # =&gt; '6513270e-269e-4d37-b2a7-4de452e6b438'
+business.name         # =&gt; 'Example Handyman Group HQ'
+business.phone        # =&gt; '5555550100', or nil where no number can be dialed
+business.subsidiaries.map &amp;:name
+# =&gt; ['Example Handyman Group HQ', 'Example Handyman Region', 'Example Handyman - Springfield']</code></pre></div>
+      <p class='note'><code class='inline'>phone</code> is ten digits however Housecall Pro wrote them, punctuation and a leading 1 taken off, and <code class='inline'>nil</code> where what it holds is not a number anybody could dial.</p>
+      <p class='note'><code class='inline'>subsidiaries</code> is never empty: it is the business itself, then every location under it at any depth, in the order Housecall Pro lists them. A single company is its own one subsidiary, and a franchise reads flat however deep Housecall Pro nests it. Each subsidiary's <code class='inline'>id</code> is what <code class='inline'>company_id:</code> takes:</p>
+      <div class='snippet'><pre><code>account.business.subsidiaries.each do |location|
+  Hcp::Account.new(key: key, company_id: location.id).jobs.past 4.weeks
+end</code></pre></div>
+    </section>
+
+    <section id='locations'>
       <div class='head'>
         <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-pin'><path d='M16 29s9-9.5 9-16a9 9 0 1 0-18 0c0 6.5 9 16 9 16z'/><circle class='dot' cx='16' cy='13' r='3.2'/></svg></span>
-        <h2>Addresses</h2>
-        <a class='anchor' href='#addresses' aria-label='Link to Addresses'>#</a>
+        <h2>Locations</h2>
+        <a class='anchor' href='#locations' aria-label='Link to Locations'>#</a>
       </div>
       <hr>
 
-      <p class='note'>Where a customer is billed, or where the work happens. <code class='inline'>Hcp::Address</code>.</p>
-      <div class='snippet'><pre><code>address = Hcp::Customer.first.addresses.first
+      <p class='note'>Where the work happens: one address Housecall Pro books a job at. <code class='inline'>Hcp::Location</code>.</p>
+      <div class='snippet'><pre><code>location = job.location
 
-address.id            # =&gt; 'adr_703532314fe64002a5104d3e0a29f611'
-address.type          # =&gt; :billing, or :service
-address.street        # =&gt; '1 Example Street'
-address.street_line_2 # =&gt; 'Apt 4', or nil
-address.city          # =&gt; 'Springfield'
-address.state         # =&gt; 'CA'
-address.zip           # =&gt; '90210'
-address.country       # =&gt; 'US'
-address.latitude      # =&gt; 34.0
-address.longitude     # =&gt; -118.0</code></pre></div>
-      <p class='note'><code class='inline'>type</code> is the one reader that is not read straight through: Housecall Pro writes it as a string and it comes back as <code class='inline'>:billing</code> or <code class='inline'>:service</code>. The coordinates are where Housecall Pro placed the address, and are <code class='inline'>nil</code> where it placed it nowhere.</p>
-      <p class='note'>A job's address and a customer's address are the same class read two ways. The job carries one, already inside the answer; the customer's are a relation, and cost a request when they are walked.</p>
+location.id        # =&gt; 'adr_703532314fe64002a5104d3e0a29f611'
+location.street    # =&gt; '1 Example Street'
+location.city      # =&gt; 'Springfield'
+location.zip       # =&gt; '90210'
+location.latitude  # =&gt; 34.0
+location.longitude # =&gt; -118.0
+location.customer  # =&gt; whose place it is</code></pre></div>
+      <p class='note'>Housecall Pro files the address and the customer side by side under the job; the vocabulary reads a location with whose place it is beside it, so the job hands back one record and the customer hangs off it. Both arrive inside the job Housecall Pro already answered with, so reading them costs nothing more.</p>
+      <p class='note'>The coordinates are where Housecall Pro placed the address, and are <code class='inline'>nil</code> where it placed it nowhere. <code class='inline'>job.location</code> is itself <code class='inline'>nil</code> on a job booked nowhere.</p>
     </section>
 
-    <section id='employees'>
+    <section id='customers'>
       <div class='head'>
         <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-person'><circle cx='16' cy='11' r='5.5'/><path d='M6 28c0-5.5 4.5-9.5 10-9.5s10 4 10 9.5'/></svg></span>
-        <h2>Employees</h2>
-        <a class='anchor' href='#employees' aria-label='Link to Employees'>#</a>
+        <h2>Customers</h2>
+        <a class='anchor' href='#customers' aria-label='Link to Customers'>#</a>
       </div>
       <hr>
 
-      <p class='note'>A pro on a Housecall Pro account. <code class='inline'>Hcp::Employee</code>.</p>
-      <div class='snippet'><pre><code>employee = Hcp::Estimate.first.assigned_employees.first
+      <p class='note'>Whoever the work is for. <code class='inline'>Hcp::Customer</code>.</p>
+      <div class='snippet'><pre><code>customer = job.location.customer
 
-employee.id         # =&gt; 'pro_738721e93c12463ea2e756267f5a5fe7'
-employee.name       # =&gt; 'Ada Example'
-employee.first_name # =&gt; 'Ada'
-employee.last_name  # =&gt; 'Example'
-employee.email      # =&gt; 'ada@example.com'
-employee.phone      # =&gt; '5550000001'
-employee.role       # =&gt; 'admin'
-employee.created_at # =&gt; 2026-05-02 09:12:44 UTC
-employee.updated_at # =&gt; 2026-06-19 17:03:11 UTC</code></pre></div>
-      <p class='note'><code class='inline'>name</code> joins whichever of the two names Housecall Pro holds, the way a <a href='customers.html'>customer's</a> does. There is no list of an account's employees here: Housecall Pro answers one endpoint for them and this gem reads none, so a pro is reached only through the job or the estimate they are assigned to.</p>
-      <p class='note'>An <a href='appointments.html'>appointment</a> names its pros by ID rather than handing back employees, because that is all Housecall Pro sends with a visit.</p>
+customer.id      # =&gt; 'cus_c3fd9f15d014442aa3165fccf68ae95c'
+customer.name    # =&gt; 'Ada'
+customer.surname # =&gt; 'Lovelace'
+customer.email   # =&gt; 'ada@example.com'
+customer.phone   # =&gt; '5550000001'</code></pre></div>
+      <p class='note'>A customer's <code class='inline'>name</code> is their first name, or the business's where a person has none &mdash; an account that works for companies reads a name either way, rather than a blank where a company should be.</p>
+      <p class='note'><code class='inline'>phone</code> is the first of the mobile, home and work numbers that can be dialed, as ten digits, and <code class='inline'>nil</code> where none of the three can be. Housecall Pro holds all three; a caller wants the one to ring.</p>
+      <p class='note'>A <a href='leads.html'>lead</a> hands back a customer too, which is the one Housecall Pro opened with it.</p>
     </section>
 
-    <section id='schedules'>
-      <div class='head'>
-        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-clock'><circle cx='16' cy='17' r='11'/><path class='hand' d='M16 10v7h5'/><path d='M12 4h8'/></svg></span>
-        <h2>Schedules</h2>
-        <a class='anchor' href='#schedules' aria-label='Link to Schedules'>#</a>
-      </div>
-      <hr>
-
-      <p class='note'>When work is booked for, and how wide a window the customer was given. <code class='inline'>Hcp::Schedule</code>.</p>
-      <div class='snippet'><pre><code>schedule = Hcp::Job.first.schedule
-
-schedule.starts_at      # =&gt; 2026-06-26 10:45:00 UTC
-schedule.ends_at        # =&gt; 2026-06-26 12:45:00 UTC
-schedule.time_zone      # =&gt; 'America/New_York'
-schedule.arrival_window # =&gt; 30, minutes
-schedule.appointments   # =&gt; the visits, where the list was asked for them</code></pre></div>
-      <p class='note'><code class='inline'>time_zone</code> is an IANA zone, and is what a time is shown to a customer in &mdash; the moments themselves are UTC. <code class='inline'>appointments</code> is empty unless the list that read the job asked for them with <code class='inline'>includes(:appointments)</code>: it holds none of them, rather than none at all. <a href='appointments.html'>The visits</a> have a page of their own.</p>
-      <p class='note'>A job that has never been booked has no schedule, and <code class='inline'>job.schedule</code> is <code class='inline'>nil</code>.</p>
-    </section>
-
-    <section id='line-items'>
+    <section id='lines'>
       <div class='head'>
         <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-drawer'><rect x='5' y='6' width='22' height='9' rx='2'/><rect x='5' y='17' width='22' height='9' rx='2'/><path d='M13.5 10.5h5'/><path d='M13.5 21.5h5'/></svg></span>
-        <h2>Line items</h2>
-        <a class='anchor' href='#line-items' aria-label='Link to Line items'>#</a>
+        <h2>Lines</h2>
+        <a class='anchor' href='#lines' aria-label='Link to Lines'>#</a>
       </div>
       <hr>
 
-      <p class='note'>One line of what a job comes to. <code class='inline'>Hcp::LineItem</code>.</p>
-      <div class='snippet'><pre><code>item = Hcp::Job.first.line_items.first
+      <p class='note'>One line of what a job comes to: how many of a thing, what it is called, and what it comes to. <code class='inline'>Hcp::Line</code>.</p>
+      <div class='snippet'><pre><code>line = job.lines.first
 
-item.id          # =&gt; 'rli_d193fee8eb734d13acad5d7e42691333'
-item.name        # =&gt; 'Exterior trim - Fascia repair'
-item.description # =&gt; 'Reattach or install a single piece of prebent fascia...'
-item.quantity    # =&gt; 1.0
-item.unit_price  # =&gt; 0.33e3, a BigDecimal &mdash; $330.00
-item.unit_cost   # =&gt; 0.5e0, a BigDecimal &mdash; $0.50
-item.amount      # =&gt; 0.33e3
-item.kind        # =&gt; :labor</code></pre></div>
-      <p class='note'><code class='inline'>kind</code> is <code class='inline'>:materials</code>, <code class='inline'>:labor</code>, or one of the gratuities and discounts, with the spaces Housecall Pro writes them with turned into underscores. The three sums are dollars, as <code class='inline'>BigDecimal</code>, because Housecall Pro counts them in cents.</p>
-      <div class='snippet'><pre><code>job.line_items.sum &amp;:amount   # =&gt; 0.33e3
-job.line_items.group_by &amp;:kind</code></pre></div>
+line.id          # =&gt; 'rli_d193fee8eb734d13acad5d7e42691333'
+line.name        # =&gt; 'Exterior trim - Fascia repair'
+line.description # =&gt; 'Reattach or install a single piece of prebent fascia...'
+line.quantity    # =&gt; 1, and 1.5 where half of one was billed
+line.amount      # =&gt; 0.33e3, a BigDecimal &mdash; $330.00</code></pre></div>
+      <p class='note'>Housecall Pro files a job's lines under their own endpoint rather than beside the job, so they are read once, on the first ask, and held afterwards. That is one request per job whose lines are read, and none for a job whose lines are not:</p>
+      <div class='snippet'><pre><code>job.lines.sum &amp;:amount # =&gt; 0.33e3, one request
+job.lines.count        # =&gt; 1, and no second one</code></pre></div>
+      <p class='note'>A whole quantity reads as an <code class='inline'>Integer</code> &mdash; <code class='inline'>3 Faucets</code> rather than <code class='inline'>3.0 Faucets</code> &mdash; and a fraction keeps its point, since rounding it would lie about what was billed. <code class='inline'>amount</code> is dollars, as a <code class='inline'>BigDecimal</code>, because Housecall Pro counts in cents.</p>
     </section>
 
-    <section id='notes'>
-      <div class='head'>
-        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-tag'><path d='M17 4.5h10.5V15L14.5 28 4 17.5z'/><circle class='hole' cx='22.5' cy='9.5' r='2'/></svg></span>
-        <h2>Notes</h2>
-        <a class='anchor' href='#notes' aria-label='Link to Notes'>#</a>
-      </div>
-      <hr>
-
-      <p class='note'>Something a pro wrote on a job or on an estimate option. <code class='inline'>Hcp::Note</code>.</p>
-      <div class='snippet'><pre><code>note = Hcp::Job.first.notes.first
-
-note.id      # =&gt; 'nte_890617b1c1a24b228464e26c9beefdf4'
-note.content # =&gt; 'Gate code is 4021'</code></pre></div>
-      <p class='note'>Two readers, because Housecall Pro sends two things. Notes arrive inside the job or the option that carries them, so <code class='inline'>notes</code> is an array and reading it costs nothing more.</p>
-    </section>
-
-    <section id='invoices'>
+    <section id='quotes'>
       <div class='head'>
         <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-money'><circle cx='16' cy='16' r='11'/><path d='M16 8.5v15'/><path d='M20 12.5h-5.5a2.75 2.75 0 0 0 0 5.5h3a2.75 2.75 0 0 1 0 5.5H12'/></svg></span>
-        <h2>Invoices</h2>
-        <a class='anchor' href='#invoices' aria-label='Link to Invoices'>#</a>
+        <h2>Quotes</h2>
+        <a class='anchor' href='#quotes' aria-label='Link to Quotes'>#</a>
       </div>
       <hr>
 
-      <p class='note'>A bill raised for a job. <code class='inline'>Hcp::Job::Invoice</code>.</p>
-      <div class='snippet'><pre><code>invoice = Hcp::Job.first.invoices.first
+      <p class='note'>A price a Housecall Pro user sent, which Housecall Pro calls an estimate option: a job names the option it was created from, and an estimate holds one option or several. <code class='inline'>Hcp::Quote</code>.</p>
+      <div class='snippet'><pre><code>quote = job.quote
 
-invoice.id             # =&gt; 'inv_1a0e94c5d7b34f0aa2c1e6f8b9d0c3a4'
-invoice.invoice_number # =&gt; '51575153'
-invoice.status         # =&gt; 'paid'
-invoice.amount         # =&gt; 0.33e3, a BigDecimal &mdash; $330.00
-invoice.due_amount     # =&gt; 0.0
-invoice.sent_at        # =&gt; 2026-06-26 13:02:11 UTC
-invoice.paid_at        # =&gt; 2026-06-27 08:41:55 UTC</code></pre></div>
-      <p class='note'><code class='inline'>status</code> is read as Housecall Pro writes it, in its own words, because an invoice moves through a workflow of its own rather than through the one a <a href='jobs.html'>job</a> and an <a href='estimates.html'>estimate</a> share. <code class='inline'>sent_at</code> and <code class='inline'>paid_at</code> are <code class='inline'>nil</code> until each has happened.</p>
-    </section>
-
-    <section id='options'>
-      <div class='head'>
-        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-box'><path class='lid' d='M4.5 11 16 5.5 27.5 11'/><path d='M4.5 11v12L16 28.5 27.5 23V11'/><path d='M16 16.5v12'/><path d='M4.5 11 16 16.5 27.5 11'/></svg></span>
-        <h2>Estimate options</h2>
-        <a class='anchor' href='#options' aria-label='Link to Estimate options'>#</a>
-      </div>
-      <hr>
-
-      <p class='note'>One of the things a customer was offered on an estimate, priced on its own. <code class='inline'>Hcp::Estimate::Option</code>.</p>
-      <div class='snippet'><pre><code>option = Hcp::Estimate.first.options.first
-
-option.id               # =&gt; 'est_7e935e461264420eb5d6d5421558d9a3'
-option.name             # =&gt; 'Option #1'
-option.option_number    # =&gt; '51108564'
-option.status           # =&gt; 'submitted for signoff'
-option.approval_status  # =&gt; nil, until the customer answers
-option.message_from_pro # =&gt; 'Thank you for doing business with us!'
-option.total_amount     # =&gt; 0.145e4, a BigDecimal &mdash; $1,450.00
-option.tags             # =&gt; ['Pipeline Automation']
-option.notes.map &amp;:content # =&gt; ['No phone (estimate $20-$50)']
-option.created_at       # =&gt; 2026-06-21 13:39:50 UTC
-option.updated_at       # =&gt; 2026-06-22 13:45:09 UTC</code></pre></div>
-      <p class='note'>An option carries its own notes and its own tags, so two options on one estimate can be annotated apart. <a href='estimates.html#options'>The estimate page</a> shows them in context.</p>
-    </section>
-
-    <section id='companies'>
-      <div class='head'>
-        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-box'><path class='lid' d='M4.5 11 16 5.5 27.5 11'/><path d='M4.5 11v12L16 28.5 27.5 23V11'/><path d='M16 16.5v12'/><path d='M4.5 11 16 16.5 27.5 11'/></svg></span>
-        <h2>Companies</h2>
-        <a class='anchor' href='#companies' aria-label='Link to Companies'>#</a>
-      </div>
-      <hr>
-
-      <p class='note'>The account a key belongs to, and the settings every job it holds is booked under. <code class='inline'>Hcp::Company</code>. There is no list of companies and no ID to find one by &mdash; a key reads its own account and nothing else &mdash; so it is read with <code class='inline'>current</code> rather than with <code class='inline'>find</code> or <code class='inline'>where</code>.</p>
-      <div class='snippet'><pre><code>company = Hcp::Company.current
-
-company.id             # =&gt; '6513270e-269e-4d37-b2a7-4de452e6b438'
-company.name           # =&gt; 'Example Handyman Group HQ'
-company.phone          # =&gt; '(555) 555-0100'
-company.support_email  # =&gt; 'hq@example.com'
-company.website        # =&gt; 'https://example.com'
-company.logo_url       # =&gt; 'https://example.com/logos/hq.jpeg'
-company.time_zone      # =&gt; 'America/Los_Angeles'
-company.arrival_window # =&gt; 30, minutes
-company.address.city   # =&gt; 'Springfield'
-company.zip_codes      # =&gt; ['28278', '28213'], the ones the account travels to
-company.locations.map &amp;:name
-# =&gt; ['Example Handyman Group HQ', 'Example Handyman Region', 'Example Handyman - Springfield']</code></pre></div>
-      <p class='note'><code class='inline'>locations</code> is never empty: it is the account itself, then every location under it at any depth, in the order Housecall Pro lists them. A single company is its own one location, and a franchise reads flat however deep Housecall Pro nests it. Each location's <code class='inline'>id</code> is what <code class='inline'>company_id:</code> takes, here and everywhere else: <code class='inline'>Hcp::Company.current company_id: location.id</code> reads that location's own settings.</p>
-    </section>
-
-    <section id='booking-windows'>
-      <div class='head'>
-        <span class='glyph' aria-hidden='true'><svg viewBox='0 0 32 32' class='g-clock'><circle cx='16' cy='17' r='11'/><path class='hand' d='M16 10v7h5'/><path d='M12 4h8'/></svg></span>
-        <h2>Booking windows</h2>
-        <a class='anchor' href='#booking-windows' aria-label='Link to Booking windows'>#</a>
-      </div>
-      <hr>
-
-      <p class='note'>When the account is free to be booked into, as its Online Booking settings answer it. <code class='inline'>Hcp::BookingWindow</code>. Housecall Pro hands this list back whole rather than a page at a time, so it comes back as an <code class='inline'>Array</code> rather than as a relation &mdash; there is nothing left to narrow, order or cut afterwards.</p>
-      <div class='snippet'><pre><code>windows = Hcp::BookingWindow.all starts_at: Date.tomorrow, days: 14, minutes: 90
-
-window = windows.first
-window.starts_at  # =&gt; 2026-08-29 08:00:00 UTC
-window.ends_at    # =&gt; 2026-08-29 09:30:00 UTC
-window.available? # =&gt; true
-
-windows.select(&amp;:available?).map { |window| [ window.starts_at, window.ends_at ] }</code></pre></div>
-      <p class='note'><code class='inline'>all</code> takes <code class='inline'>starts_at:</code>, <code class='inline'>days:</code>, <code class='inline'>minutes:</code>, <code class='inline'>service_id:</code>, <code class='inline'>price_form_id:</code>, <code class='inline'>employee_ids:</code> and <code class='inline'>company_id:</code>. Left out, <code class='inline'>starts_at</code> is the next day holding a free window and <code class='inline'>days</code> is seven; a window is cut to the service's own duration where <code class='inline'>service_id</code> names one, to <code class='inline'>minutes</code> where that is given, and to thirty minutes otherwise.</p>
+quote.id     # =&gt; 'est_7e935e461264420eb5d6d5421558d9a3', named beside the job
+quote.amount # =&gt; 0.145e4, a BigDecimal &mdash; $1,450.00</code></pre></div>
+      <p class='note'><code class='inline'>job.quote</code> is <code class='inline'>nil</code> where the job was won without one, and the ID costs nothing: Housecall Pro names it beside the job. The amount is the one thing it does not send. Housecall Pro reads an estimate by its own ID and not by an option's, so the option is found among the customer's estimates &mdash; one request, on the first ask, and <code class='inline'>nil</code> where the option is not among them.</p>
+      <p class='note'>What was quoted and what the job came to are two numbers, and the gem keeps them apart: <code class='inline'>job.amount</code> is what the work is billed at, and <code class='inline'>job.quote.amount</code> is what the customer was offered before it.</p>
     </section>
 
   </div>
