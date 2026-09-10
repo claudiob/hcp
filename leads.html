@@ -100,10 +100,9 @@ lead.id, lead.customer.id</code></pre></div>
     </div>
       <p class='note'>A lead has no title of its own on Housecall Pro, so the description heads the note and the notes follow it, one line under the other. That is the vocabulary's answer to a platform with one field where it reads two.</p>
       <p class='note'>Anything left blank is left out of the payload rather than sent as an empty string, so a lead with no email opens with no email rather than with one Housecall Pro would file as blank.</p>
-      <p class='note'>A lead reads its <code class='inline'>id</code> and the <code class='inline'>customer</code> Housecall Pro opened beside it, which is <a href='records.html#customers'>the same customer</a> a job's location hands back:</p>
-      <div class='snippet'><pre><code>lead.id            # =&gt; 'lea_9f0a1c8d2b4e4f0f8c1d2e3f4a5b6c7d'
-lead.customer.id   # =&gt; 'cus_c3fd9f15d014442aa3165fccf68ae95c'
-lead.customer.name # =&gt; 'Ada'</code></pre></div>
+      <p class='note'>A lead reads its <code class='inline'>id</code> and the <code class='inline'>customer</code> Housecall Pro opened beside it, which it names by ID alone. It is <a href='records.html#customers'>the same customer</a> a job's location hands back, read whole there:</p>
+      <div class='snippet'><pre><code>lead.id          # =&gt; 'lea_9f0a1c8d2b4e4f0f8c1d2e3f4a5b6c7d'
+lead.customer.id # =&gt; 'cus_c3fd9f15d014442aa3165fccf68ae95c'</code></pre></div>
       <p class='note'>A lead Housecall Pro will not open raises <a href='errors.html'>Hcp::Error</a>, carrying what it said. A connection it will not take raises the same, so one rescue covers both.</p>
     </section>
 
