@@ -66,11 +66,11 @@
   job.id, job.description, job.created_at, job.scheduled_at, job.completed_at
   job.notes             # =&gt; "- Gate code 1234\n- Dog in the yard", one to a line
   job.amount            # =&gt; 330.0, dollars as a BigDecimal, where Housecall Pro said 33000
-  job.quote             # =&gt; an Hcp::Quote, the estimate option the job was created from, or nil
-  job.quote.amount      # =&gt; that option's total in dollars, found among the customer's estimates
+  job.quote             # =&gt; an Hcp::Quote, the estimate option it came from, or nil
+  job.quote.amount      # =&gt; that option's total in dollars, found among the estimates
   job.location          # =&gt; an Hcp::Location, or nil where the job is booked nowhere
   job.location.customer # =&gt; an Hcp::Customer: id, name, surname, email, phone
-  job.lines             # =&gt; Hcp::Line, read off the job's own line_items endpoint on first ask
+  job.lines             # =&gt; Hcp::Line, read off the job's own endpoint on first ask
 end</code></pre></div>
       <p class='note'><code class='inline'>account.jobs</code> is <code class='inline'>Enumerable</code>, so everything Enumerable answers, it answers. Nothing is read until the walk starts, and a page &mdash; two hundred jobs, the most Housecall Pro hands over at once &mdash; only once the one before it runs out:</p>
       <div class='snippet'><pre><code>account.jobs.past(4.weeks).map &amp;:description

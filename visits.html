@@ -64,7 +64,7 @@
       <p class='note'>The visits booked to start within a window are walked off the account, the same way the <a href='jobs.html'>jobs</a> are:</p>
       <div class='snippet'><pre><code>account.visits.upcoming(2.weeks).each do |visit|
   visit.id, visit.description, visit.starts_at, visit.ends_at, visit.anytime?
-  visit.job              # =&gt; the Hcp::Job the stop belongs to, its location and customer along
+  visit.job              # =&gt; the Hcp::Job the stop belongs to, its place along
 end</code></pre></div>
       <p class='note'><code class='inline'>upcoming</code> looks ahead from now and <code class='inline'>past</code> looks back, and each takes how far &mdash; a duration in Rails, a number of seconds outside it, or nothing at all. Both ends are measured from one moment, so nothing slides between them:</p>
       <div class='snippet'><pre><code>account.visits.upcoming 2.weeks # booked to start between now and two weeks on

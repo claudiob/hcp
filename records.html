@@ -94,7 +94,7 @@ business.id           # =&gt; '6513270e-269e-4d37-b2a7-4de452e6b438'
 business.name         # =&gt; 'Example Handyman Group HQ'
 business.phone        # =&gt; '5555550100', or nil where no number can be dialed
 business.subsidiaries.map &amp;:name
-# =&gt; ['Example Handyman Group HQ', 'Example Handyman Region', 'Example Handyman - Springfield']</code></pre></div>
+# =&gt; ['Example Handyman Group HQ', 'Example Handyman Region', 'Handyman - Springfield']</code></pre></div>
       <p class='note'><code class='inline'>phone</code> is ten digits however Housecall Pro wrote them, punctuation and a leading 1 taken off, and <code class='inline'>nil</code> where what it holds is not a number anybody could dial.</p>
       <p class='note'><code class='inline'>subsidiaries</code> is never empty: it is the business itself, then every location under it at any depth, in the order Housecall Pro lists them. A single company is its own one subsidiary, and a franchise reads flat however deep Housecall Pro nests it. Each subsidiary's <code class='inline'>id</code> is what <code class='inline'>company_id:</code> takes:</p>
       <div class='snippet'><pre><code>account.business.subsidiaries.each do |location|

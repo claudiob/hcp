@@ -138,15 +138,15 @@ business.subsidiaries # =&gt; the business itself first, then every location und
   job.id, job.description, job.created_at, job.scheduled_at, job.completed_at
   job.notes             # =&gt; "- Gate code 1234\n- Dog in the yard", one to a line
   job.amount            # =&gt; 330.0, dollars as a BigDecimal, where Housecall Pro said 33000
-  job.quote             # =&gt; an Hcp::Quote, the estimate option the job was created from, or nil
+  job.quote             # =&gt; an Hcp::Quote, the estimate option it came from, or nil
   job.location          # =&gt; an Hcp::Location, or nil where the job is booked nowhere
   job.location.customer # =&gt; an Hcp::Customer: id, name, surname, email, phone
-  job.lines             # =&gt; Hcp::Line, read off the job's own line_items endpoint on first ask
+  job.lines             # =&gt; Hcp::Line, read off the job's own endpoint on first ask
 end</code></pre></div>
       <p class='note'>Housecall Pro calls a visit an appointment and files it inside a job, so the visits booked to start within a window are read off the jobs booked across it, each saying what its job says and carrying it:</p>
       <div class='snippet'><pre><code>account.visits.upcoming(2.weeks).each do |visit|
   visit.id, visit.description, visit.starts_at, visit.ends_at, visit.anytime?
-  visit.job              # =&gt; the Hcp::Job the stop belongs to, its location and customer along
+  visit.job              # =&gt; the Hcp::Job the stop belongs to, its place along
 end</code></pre></div>
       <p class='note'>Nothing is read until the walk starts, and a page only once the one before it runs out. <code class='inline'>past</code> and <code class='inline'>upcoming</code> take how far the window reaches from now &mdash; a duration in Rails, a number of seconds outside it, or nothing at all for as far as the account goes. Everything a job reads is on <a href='jobs.html'>the jobs page</a>, and everything a visit reads on <a href='visits.html'>the visits page</a>.</p>
     </section>
