@@ -15,6 +15,10 @@
   the one slot it is booked for. Housecall Pro expands an estimate with `attachments` and not
   with appointments, so the estimate's own `schedule` is the slot and answers to its ID.
 
+- [Feature] `Hcp::Visit#location`, where the stop is: an appointment has no address of its own
+  and takes the job's, an estimate's slot takes the estimate's. Both nodes are read in full
+  already, so it costs nothing and is always there.
+
 - [Feature] `Hcp::Visit#lead`, and `technicians` reading an estimate's `assigned_employees`
   where a job's stop reads its dispatch.
 

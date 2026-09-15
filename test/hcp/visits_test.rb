@@ -23,6 +23,7 @@ class VisitsTestCase < Minitest::Test
     assert_equal Time.at((@now + 1.day + 2.hours).to_i), visits.sole.ends_at
     refute visits.sole.anytime?
     assert_equal 'job_1', visits.sole.job.id
+    assert_equal '1 Example Street', visits.sole.location.street
     assert_equal '1 Example Street', visits.sole.job.location.street
     assert_equal 'Ada', visits.sole.job.location.customer.name
   end

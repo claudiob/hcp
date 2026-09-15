@@ -95,6 +95,7 @@ every job and estimate there was.
 account.visits.upcoming(2.weeks).each do |visit|
   visit.id, visit.starts_at, visit.ends_at, visit.anytime?
   visit.description      # => what the job is called, or nil: an estimate has no words of its own
+  visit.location         # => where the stop is, whatever it was booked for
   visit.job              # => the Hcp::Job the stop belongs to, or nil where an estimate does
   visit.lead             # => the Hcp::Estimate it belongs to, or nil where a job does
   visit.technicians      # => the Hcp::Technicians the stop is booked for
@@ -107,6 +108,10 @@ The two cost a list each, so a caller that wants one kind asks for it and spends
 account.visits.upcoming(2.weeks).for_jobs  # => only the appointments, one request
 account.visits.upcoming(2.weeks).for_leads # => only the estimates' slots, one request
 ```
+
+A stop says where it is without being asked what it was booked for: an appointment has no
+address of its own and takes the job's, and an estimate's slot takes the estimate's. A caller
+reading a schedule never reaches through `visit.job` for an address.
 
 An estimate reads as the lead it is -- `id`, `customer`, `location` -- because its other half,
 the price, is already `Hcp::Quote`: Housecall Pro files the visit and the prices as one record
