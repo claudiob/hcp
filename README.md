@@ -93,8 +93,38 @@ list nothing narrows walks every job there was.
 account.visits.upcoming(2.weeks).each do |visit|
   visit.id, visit.description, visit.starts_at, visit.ends_at, visit.anytime?
   visit.job              # => the Hcp::Job the stop belongs to, its location and customer along
+  visit.technicians      # => the Hcp::Technicians the stop is booked for
 end
 ```
+
+## The schedule
+
+The crew are Housecall Pro's employees, and the active ones are walked a page at a time:
+
+```ruby
+account.technicians.each do |technician|
+  technician.id, technician.name, technician.surname
+end
+```
+
+One technician's week is the visits in it narrowed to them, which is how a schedule reads:
+
+```ruby
+monday = Date.today.beginning_of_week.in_time_zone
+account.visits.between(monday, monday + 1.week).assigned_to(technician).each do |visit|
+  visit.starts_at, visit.ends_at, visit.job.location.street
+end
+```
+
+Housecall Pro narrows the jobs by who is assigned to them, so the window is asked for as that
+technician's and nobody else's jobs come back. It narrows no further: a job's appointments are
+dispatched to some of its crew or to none of it, so a stop dispatched to nobody is the whole
+crew's, and the stops the technician is not on are let go once the jobs arrive. Asking for the
+week and asking for the technician narrow the same list, in either order.
+
+What Housecall Pro schedules elsewhere is not here: an estimate occupies a slot and is filed
+under `/estimates`, and time blocked out on the calendar is filed under `/events`, which takes
+no date and no employee to narrow by.
 
 ## Errors
 
