@@ -42,13 +42,16 @@ documented shape. What has been found so far:
   `Estimate not found` for an option's, so an option is found by listing
   `GET /estimates?customer_id=` and searching the options. Probed live 2026-09-09.
 
+- `employee_ids` narrows both `/jobs` and `/estimates` by assigned pro, and `/estimates` takes
+  the same `scheduled_start_min`/`scheduled_start_max` window as `/jobs`. Over one year on a
+  real account: 15 jobs to 5, and 40 estimates to 2. Worth writing down because the spec gives
+  the parameter no description at all on `/jobs` -- only the `/estimates` twin documents it.
+  `GET /employees` answers `first_name` and `last_name`. Probed live 2026-09-15.
+
 Read off the spec but **not probed**, so treat as claims rather than findings:
 
-- `GET /estimates` takes the same window and `employee_ids` filters as `GET /jobs`, but its
-  `expand` enum is `attachments` alone -- there is no `appointments` on an estimate, so its
-  `schedule` is the one slot it occupies. Its `work_status` enum carries `canceled`.
-- `employee_ids` on `/jobs` has no description of its own; only the `/estimates` twin documents
-  it as filtering by assigned pro.
+- `GET /estimates`' `expand` enum is `attachments` alone -- there is no `appointments` on an
+  estimate, so its `schedule` is the one slot it occupies. Its `work_status` carries `canceled`.
 - `GET /routes` is the only endpoint that groups a day's work, and is unusable as one: it takes
   a single `date` and `per_page` rather than a range, refuses a Company API Key, and answers
   `event_ids` and `estimate_ids` as bare strings, so the times still cost `/events` and
