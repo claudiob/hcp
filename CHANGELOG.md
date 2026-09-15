@@ -1,5 +1,16 @@
 ## [Unreleased]
 
+- [Feature] `account.technicians` walks the location's employees a page at a time, each an
+  `Hcp::Technician` reading `id`, `name` off `first_name` and `surname` off `last_name`.
+
+- [Feature] `job.technicians` is the crew a job is assigned to, and `visit.technicians` whoever
+  an appointment was dispatched to -- or, where it was dispatched to nobody, the job's whole
+  crew, which is how Housecall Pro draws it.
+
+- [Feature] `account.visits.between(from, to).assigned_to(technician)` is one technician's
+  week. The window goes to Housecall Pro as `employee_ids`, so only their jobs come back, and
+  the stops of those jobs they are not on are let go as the jobs arrive.
+
 ## [2.0.0] - 2026-09-09
 
 - [Breaking change] The key is one account's: `Hcp::Account.new(key:, company_id:)`, a

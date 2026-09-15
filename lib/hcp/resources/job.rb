@@ -38,6 +38,10 @@ module Hcp
     # @return [Array<Visit>] stops the job is booked as, empty where none came back.
     def visits = Array(@node.dig :schedule, :appointments).map { Visit.new node: it, job: self }
 
+    # @return [Array<Technician>] employees the job is assigned to, empty where it is assigned
+    #   to nobody.
+    def technicians = records Technician, :assigned_employees
+
     # @return [Boolean] whether the customer or the pro called the job off.
     def canceled? = attribute(:work_status).to_s.end_with? 'canceled'
 
