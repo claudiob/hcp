@@ -84,18 +84,38 @@ A customer's `name` is their first name, or the business's where a person has no
 
 ## Visits
 
-Housecall Pro calls a visit an appointment and files it inside a job, so the visits booked to
-start within a window are read off the jobs booked across it, a page of jobs at a time, each
-saying what its job says and carrying it. A job called off keeps its visits to itself, and a
-list nothing narrows walks every job there was.
+A visit is any booked time, and Housecall Pro books it two ways. Work already won is a job,
+and Housecall Pro calls its stops appointments and files them inside it. Work still being
+looked at is an estimate, which it schedules the same way but hangs no appointments under, so
+an estimate holds the one slot. Both are read off the work booked across the window, a page of
+it at a time; work called off keeps its stops to itself, and a list nothing narrows walks
+every job and estimate there was.
 
 ```ruby
 account.visits.upcoming(2.weeks).each do |visit|
-  visit.id, visit.description, visit.starts_at, visit.ends_at, visit.anytime?
-  visit.job              # => the Hcp::Job the stop belongs to, its location and customer along
+  visit.id, visit.starts_at, visit.ends_at, visit.anytime?
+  visit.description      # => what the job is called, or nil: an estimate has no words of its own
+  visit.job              # => the Hcp::Job the stop belongs to, or nil where an estimate does
+  visit.lead             # => the Hcp::Estimate it belongs to, or nil where a job does
   visit.technicians      # => the Hcp::Technicians the stop is booked for
 end
 ```
+
+The two cost a list each, so a caller that wants one kind asks for it and spends one request:
+
+```ruby
+account.visits.upcoming(2.weeks).for_jobs  # => only the appointments, one request
+account.visits.upcoming(2.weeks).for_leads # => only the estimates' slots, one request
+```
+
+An estimate reads as the lead it is -- `id`, `customer`, `location` -- because its other half,
+the price, is already `Hcp::Quote`: Housecall Pro files the visit and the prices as one record
+and the vocabulary reads them as two.
+
+`account.visits.create` is named by the vocabulary and not answered here yet; it raises
+`NotImplementedError`. Booking one means `POST /estimates`, which takes a `customer_id` rather
+than a customer, so it needs `GET /customers` and `POST /customers` first, and all three want
+probing before they are written against.
 
 ## The schedule
 
@@ -122,9 +142,9 @@ dispatched to some of its crew or to none of it, so a stop dispatched to nobody 
 crew's, and the stops the technician is not on are let go once the jobs arrive. Asking for the
 week and asking for the technician narrow the same list, in either order.
 
-What Housecall Pro schedules elsewhere is not here: an estimate occupies a slot and is filed
-under `/estimates`, and time blocked out on the calendar is filed under `/events`, which takes
-no date and no employee to narrow by.
+What Housecall Pro schedules elsewhere is still not here: time blocked out on the calendar is
+filed under `/events`, which takes no date and no employee to narrow by, so a week of it cannot
+be asked for -- only paged in full.
 
 ## Errors
 

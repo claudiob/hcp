@@ -5,7 +5,10 @@ class VisitsTestCase < Minitest::Test
   # are read off the jobs booked across the window, expanded, and kept to the window.
   def setup
     @jobs = "#{HousecallStubs::HOST}/jobs"
+    @estimates = "#{HousecallStubs::HOST}/estimates"
     @now = Time.now.utc
+    stub_request(:get, @estimates).with(query: hash_including(page: '1')).
+      to_return body: { total_pages: 1, estimates: [] }.to_json
     stub_request(:get, @jobs).
       with(query: hash_including(page: '1', 'expand' => [ 'appointments' ])).
       to_return body: { total_pages: 1, jobs: [ booked_job, canceled_job ] }.to_json
