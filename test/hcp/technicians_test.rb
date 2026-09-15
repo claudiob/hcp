@@ -10,6 +10,9 @@ class TechniciansTest < Minitest::Test
       query: { page: '1', page_size: '200' }
     stub_request(:get, @jobs).with(query: hash_including(page: '1')).
       to_return body: { total_pages: 1, jobs: [ job ] }.to_json
+    stub_request(:get, "#{HousecallStubs::HOST}/estimates").
+      with(query: hash_including(page: '1')).
+      to_return body: { total_pages: 1, estimates: [] }.to_json
   end
 
   def test_the_crew_reads_by_the_names_the_vocabulary_gives_it
