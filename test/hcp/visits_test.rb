@@ -5,7 +5,10 @@ class VisitsTestCase < Minitest::Test
   # are read off the jobs booked across the window, expanded, and kept to the window.
   def setup
     @jobs = "#{HousecallStubs::HOST}/jobs"
+    @estimates = "#{HousecallStubs::HOST}/estimates"
     @now = Time.now.utc
+    stub_request(:get, @estimates).with(query: hash_including(page: '1')).
+      to_return body: { total_pages: 1, estimates: [] }.to_json
     stub_request(:get, @jobs).
       with(query: hash_including(page: '1', 'expand' => [ 'appointments' ])).
       to_return body: { total_pages: 1, jobs: [ booked_job, canceled_job ] }.to_json
@@ -20,6 +23,7 @@ class VisitsTestCase < Minitest::Test
     assert_equal Time.at((@now + 1.day + 2.hours).to_i), visits.sole.ends_at
     refute visits.sole.anytime?
     assert_equal 'job_1', visits.sole.job.id
+    assert_equal '1 Example Street', visits.sole.location.street
     assert_equal '1 Example Street', visits.sole.job.location.street
     assert_equal 'Ada', visits.sole.job.location.customer.name
   end

@@ -42,6 +42,27 @@ documented shape. What has been found so far:
   `Estimate not found` for an option's, so an option is found by listing
   `GET /estimates?customer_id=` and searching the options. Probed live 2026-09-09.
 
+- `employee_ids` narrows both `/jobs` and `/estimates` by assigned pro, and `/estimates` takes
+  the same `scheduled_start_min`/`scheduled_start_max` window as `/jobs`. Over one year on a
+  real account: 15 jobs to 5, and 40 estimates to 2. Worth writing down because the spec gives
+  the parameter no description at all on `/jobs` -- only the `/estimates` twin documents it.
+  `GET /employees` answers `first_name` and `last_name`. Probed live 2026-09-15.
+
+Read off the spec but **not probed**, so treat as claims rather than findings:
+
+- `GET /estimates`' `expand` enum is `attachments` alone -- there is no `appointments` on an
+  estimate, so its `schedule` is the one slot it occupies. Its `work_status` carries `canceled`.
+- `GET /routes` is the only endpoint that groups a day's work, and is unusable as one: it takes
+  a single `date` and `per_page` rather than a range, refuses a Company API Key, and answers
+  `event_ids` and `estimate_ids` as bare strings, so the times still cost `/events` and
+  `/estimates`.
+- `GET /events` -- time blocked out on the calendar -- takes no date and no employee filter at
+  all, so a week of it can only be paged in full. Its `recurrence_rule` is not expanded.
+- `POST /estimates` takes `customer_id`, not a customer, so booking one needs `GET /customers`
+  (search by `q`) and `POST /customers` first. The arrival window is spelled three ways:
+  `arrival_window_in_minutes` on create, `arrival_window_minutes` on an appointment,
+  `arrival_window` on a schedule read back.
+
 A company-scoped key refuses `X-Company-Id` with a 401 on every endpoint, so the header can only
 be exercised with an application key. `GET /company` answers `locations` only to the latter, and
 nests: a location holds locations of its own, several levels deep.

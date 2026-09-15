@@ -1,5 +1,27 @@
 ## [Unreleased]
 
+- [Breaking change] The vocabulary is `company` 2.0: a `Company::Selection` takes its rule as a
+  block, and a visit answers a lead as well as a job. The pin moves to `~> 2.0`.
+
+- [Breaking change] `account.visits` is every stop booked, not only a job's: an estimate is
+  work still being looked at, so its slot is a visit too, and the list now reads `/jobs` and
+  `/estimates` rather than `/jobs` alone. `visit.job` is nil on an estimate's slot and
+  `visit.lead` is the `Hcp::Estimate`; `visit.description` is nil there, Housecall Pro giving
+  an estimate no words of its own. A caller that wants what it had before asks
+  `account.visits.for_jobs`, which is the one request it always was, and `for_leads` is the
+  estimates alone.
+
+- [Feature] `Hcp::Estimate`, a `Company::Lead`: `id`, `customer`, `location`, `technicians` and
+  the one slot it is booked for. Housecall Pro expands an estimate with `attachments` and not
+  with appointments, so the estimate's own `schedule` is the slot and answers to its ID.
+
+- [Feature] `Hcp::Visit#location`, where the stop is: an appointment has no address of its own
+  and takes the job's, an estimate's slot takes the estimate's. Both nodes are read in full
+  already, so it costs nothing and is always there.
+
+- [Feature] `Hcp::Visit#lead`, and `technicians` reading an estimate's `assigned_employees`
+  where a job's stop reads its dispatch.
+
 - [Feature] `account.technicians` walks the location's employees a page at a time, each an
   `Hcp::Technician` reading `id`, `name` off `first_name` and `surname` off `last_name`.
 
