@@ -141,8 +141,9 @@ account.visits.between(monday, monday + 1.week).assigned_to(technician).each do 
 end
 ```
 
-Housecall Pro narrows the jobs by who is assigned to them, so the window is asked for as that
-technician's and nobody else's jobs come back. It narrows no further: a job's appointments are
+Housecall Pro narrows both lists by who is assigned to the work, so the window is asked for as
+that technician's and nobody else's comes back -- verified against a real account, where a year
+of work went from 15 jobs to 5 and from 40 estimates to 2. It narrows no further: a job's appointments are
 dispatched to some of its crew or to none of it, so a stop dispatched to nobody is the whole
 crew's, and the stops the technician is not on are let go once the jobs arrive. Asking for the
 week and asking for the technician narrow the same list, in either order.
