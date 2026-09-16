@@ -19,6 +19,7 @@ class EstimateVisitsTest < Minitest::Test
     assert_nil visit.job
     assert_nil visit.description
     assert_equal Time.at((@now + 1.day).to_i), visit.starts_at
+    refute visit.anytime?
     assert_equal %w[emp_1], visit.technicians.map(&:id)
     assert_equal '9 Example Street', visit.location.street
     assert_equal '9 Example Street', visit.lead.location.street

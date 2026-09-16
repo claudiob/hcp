@@ -20,8 +20,8 @@ module Hcp
     # @return [nil] nothing, so a stop of one goes undescribed.
     def description = nil
 
-    # Housecall Pro files no ID on the slot, there being only ever the one, so it answers to
-    # the estimate's own.
+    # Housecall Pro files no ID on the slot, there being only ever the one, so it answers to the
+    # estimate's own, and books it for an hour rather than for any time in a day.
     # @return [Array<Visit>] the one slot the estimate is booked for, empty where it has none.
     def visits
       booked = @node.dig :schedule, :scheduled_start
@@ -36,7 +36,7 @@ module Hcp
   private
 
     def slot
-      { id: id, start_time: @node.dig(:schedule, :scheduled_start),
+      { id: id, anytime: false, start_time: @node.dig(:schedule, :scheduled_start),
         end_time: @node.dig(:schedule, :scheduled_end) }
     end
   end

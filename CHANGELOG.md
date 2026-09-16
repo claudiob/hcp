@@ -1,5 +1,11 @@
 ## [Unreleased]
 
+## [3.0.1] - 2026-09-15
+
+- [Fix] `visit.anytime?` answers false on an estimate's slot rather than nil. Housecall Pro
+  books an estimate for an hour and has no anytime to answer with, so the slot named none --
+  and a caller storing what a visit reads had a nil where it expected a yes or a no.
+
 ## [3.0.0] - 2026-09-15
 
 - [Breaking change] The vocabulary is `company` 2.1: a `Company::Selection` takes its rule as a
