@@ -1,7 +1,9 @@
 ## [Unreleased]
 
-- [Breaking change] The vocabulary is `company` 2.0: a `Company::Selection` takes its rule as a
-  block, and a visit answers a lead as well as a job. The pin moves to `~> 2.0`.
+## [3.0.0] - 2026-09-15
+
+- [Breaking change] The vocabulary is `company` 2.1: a `Company::Selection` takes its rule as a
+  block, a visit answers a lead as well as a job, and it says where it is. The pin is `~> 2.1`.
 
 - [Breaking change] `account.visits` is every stop booked, not only a job's: an estimate is
   work still being looked at, so its slot is a visit too, and the list now reads `/jobs` and

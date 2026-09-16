@@ -13,7 +13,7 @@ gem install hcp
 Or, in a Gemfile, pinned to the current major:
 
 ```ruby
-gem 'hcp', '~> 2.0'
+gem 'hcp', '~> 3.0'
 ```
 
 `~> major.minor` means `bundle update` never crosses a breaking change.
