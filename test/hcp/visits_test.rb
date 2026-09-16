@@ -12,6 +12,9 @@ class VisitsTestCase < Minitest::Test
     stub_request(:get, @jobs).
       with(query: hash_including(page: '1', 'expand' => [ 'appointments' ])).
       to_return body: { total_pages: 1, jobs: [ booked_job, canceled_job ] }.to_json
+    # Events narrow by nothing, so every read of the visits sweeps them: nobody here blocks
+    # out time, and the sweep is the occurrences test's business.
+    stub_read 'events', { total_pages: 1, events: [] }, query: hash_including(page: '1')
   end
 
   def test_reads_every_visit_booked_in_the_window_with_its_job

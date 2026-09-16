@@ -9,13 +9,16 @@ module Hcp
     # @param technician [Company::Technician, nil] whose work to ask for, or nothing for all.
     # @param jobs [Boolean] whether to read the stops of jobs.
     # @param leads [Boolean] whether to read the stops of estimates.
-    def initialize(client:, from: nil, to: nil, technician: nil, jobs: true, leads: true)
+    # @param events [Boolean] whether to read the hours blocked out around them.
+    def initialize(client:, from: nil, to: nil, technician: nil, jobs: true, leads: true,
+      events: true)
       @client = client
       @from = from
       @to = to
       @technician = technician
       @jobs = jobs
       @leads = leads
+      @events = events
     end
 
     # @param from [Time, nil] the moment the window opens, or nothing for every visit there was.
@@ -35,26 +38,30 @@ module Hcp
       end
     end
 
-    # @return [Visits] the same list, read off the jobs alone: one request rather than two.
-    def for_jobs = with leads: false
+    # @return [Visits] the same list, read off the jobs alone: one request rather than many.
+    def for_jobs = with(leads: false, events: false)
 
-    # @return [Visits] the same list, read off the estimates alone: one request rather than two.
-    def for_leads = with jobs: false
+    # @return [Visits] the same list, read off the estimates alone: one request rather than many.
+    def for_leads = with(jobs: false, events: false)
 
     # Work booked across the window carries every stop in it, so each list is read once and
     # what was called off keeps its stops to itself.
-    # @yield [Visit] each visit in the window, the jobs' stops before the estimates'.
+    # @yield [Company::Visit] each visit in the window, the work's stops before the hours
+    #   blocked out around them.
     def each(&)
       jobs.each { |job| stops job, & } if @jobs
       estimates.each { |estimate| stops estimate, & } if @leads
+      occurrences.each(&) if @events
     end
 
   private
 
     def with(**changed)
       self.class.new(**{ client: @client, from: @from, to: @to, technician: @technician,
-                         jobs: @jobs, leads: @leads }.merge(changed))
+                         jobs: @jobs, leads: @leads, events: @events, }.merge(changed))
     end
+
+    def occurrences = Occurrences.new(client: @client, from: @from, to: @to)
 
     def stops(work)
       return if work.canceled?

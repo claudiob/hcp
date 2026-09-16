@@ -96,13 +96,24 @@ account.visits.upcoming(2.weeks).each do |visit|
   visit.id, visit.starts_at, visit.ends_at, visit.anytime?
   visit.description      # => what the job is called, or nil: an estimate has no words of its own
   visit.location         # => where the stop is, whatever it was booked for
-  visit.job              # => the Hcp::Job the stop belongs to, or nil where an estimate does
-  visit.lead             # => the Hcp::Estimate it belongs to, or nil where a job does
+  visit.job              # => the Hcp::Job the stop belongs to, nil on an estimate or an event
+  visit.lead             # => the Hcp::Estimate it belongs to, nil on a job or an event
   visit.technicians      # => the Hcp::Technicians the stop is booked for
 end
 ```
 
-The two cost a list each, so a caller that wants one kind asks for it and spends one request:
+Time blocked out around the work counts as booked too, and Housecall Pro files it as an event:
+a hold, a day off, an hour that is simply not free. An event that repeats is stored once, as the
+hour it first takes and the iCalendar rule it repeats by, so the hours after that are worked out
+here rather than read -- in the time zone the event is kept in, so an hour that holds at ten in
+the morning still holds at ten once the clocks have gone back. Each one reads as a visit
+standing on no job and no lead, and answers to the event's ID and the moment it starts, there
+being one ID for the whole rule.
+
+Housecall Pro narrows events by nothing -- it accepts a window and a crew on `/events` and
+ignores both -- so a week of them is read by sweeping every page and keeping what the week
+holds. That is the one expensive part of the list, and the one way to be spared it is to ask
+for the stops of work alone:
 
 ```ruby
 account.visits.upcoming(2.weeks).for_jobs  # => only the appointments, one request

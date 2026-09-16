@@ -1,5 +1,34 @@
 ## [Unreleased]
 
+## [3.1.0] - 2026-09-16
+
+- [Feature] `account.visits` covers the time blocked out around the work, which Housecall Pro
+  files as events: a hold, a day off, an hour that is simply not free. It occupies a pro
+  exactly as a stop does, and Jobber has answered with it all along, so a schedule read through
+  this gem now says the same thing as one read through `jbr`. Each reads as a `Hcp::Occurrence`
+  standing on no job and no lead, and a caller that wants what it had before asks `for_jobs`.
+
+- [Feature] An event that repeats is stored by Housecall Pro once, as the hour it first takes
+  and the iCalendar rule it repeats by, so the hours after that are worked out here -- in the
+  time zone the event is kept in, so an hour that holds at ten in the morning still holds at
+  ten once the clocks have gone back rather than sliding to nine. `ice_cube` walks the rule;
+  it is a new runtime dependency, and the reason not to hand-roll one is that rule, DST and
+  month-end clamping together are where a hand-rolled walk quietly goes wrong.
+
+- [Feature] An hour answers to the event's ID and the moment it starts -- `evt_1@2026-09-18T14:15:00Z`
+  -- there being one ID for the whole rule and nothing else to tell two of its hours apart.
+
+- [Note] Housecall Pro narrows events by nothing. `/events` accepts `scheduled_start_min`,
+  `scheduled_start_max` and `employee_ids[]` and ignores all three, answering with the same
+  total every time, so a week is read by sweeping every page at 200 a page and keeping what the
+  week holds. On an account with 2,877 events that is 15 requests, which a nightly walk can
+  afford and a caller that only wants the stops of work should not pay: `for_jobs` and
+  `for_leads` now leave the sweep unasked.
+
+- [Note] An event carries an address but no ID for it, and leaves it empty on all but a
+  handful, so `visit.location` is nil on blocked-out time -- as it is in Jobber, where an event
+  carries no property either.
+
 ## [3.0.1] - 2026-09-15
 
 - [Fix] `visit.anytime?` answers false on an estimate's slot rather than nil. Housecall Pro

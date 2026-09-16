@@ -10,6 +10,9 @@ class TechniciansTest < Minitest::Test
       query: { page: '1', page_size: '200' }
     stub_request(:get, @jobs).with(query: hash_including(page: '1')).
       to_return body: { total_pages: 1, jobs: [ job ] }.to_json
+    # Events narrow by nothing, so every read of the visits sweeps them: nobody here blocks
+    # out time, and the sweep is the occurrences test's business.
+    stub_read 'events', { total_pages: 1, events: [] }, query: hash_including(page: '1')
     stub_request(:get, "#{HousecallStubs::HOST}/estimates").
       with(query: hash_including(page: '1')).
       to_return body: { total_pages: 1, estimates: [] }.to_json

@@ -10,6 +10,9 @@ class EstimateVisitsTest < Minitest::Test
     stub_read 'jobs', { total_pages: 1, jobs: [ job ] }, query: hash_including(page: '1')
     stub_read 'estimates', { total_pages: 1, estimates: [ estimate, called_off, unscheduled ] },
       query: hash_including(page: '1')
+    # Events narrow by nothing, so every read of the visits sweeps them: nobody here blocks
+    # out time, and the sweep is the occurrences test's business.
+    stub_read 'events', { total_pages: 1, events: [] }, query: hash_including(page: '1')
   end
 
   def test_an_estimates_slot_is_a_stop_of_a_lead_and_says_where_to_go
@@ -73,7 +76,7 @@ private
     { id: 'job_1', description: 'Paint the fence', work_status: 'scheduled',
       assigned_employees: crew,
       schedule: { appointments: [ { id: 'appt_1', start_time: (@now + 2.days).iso8601,
-                                    end_time: (@now + 2.days + 1.hour).iso8601 } ] },
+                                    end_time: (@now + 2.days + 1.hour).iso8601, } ] },
       address: { id: 'adr_1' }, customer: { id: 'cus_1' }, }
   end
 

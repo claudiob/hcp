@@ -37,7 +37,7 @@ module Hcp
 
     def slot
       { id: id, anytime: false, start_time: @node.dig(:schedule, :scheduled_start),
-        end_time: @node.dig(:schedule, :scheduled_end) }
+        end_time: @node.dig(:schedule, :scheduled_end), }
     end
   end
 end
