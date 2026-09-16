@@ -1,5 +1,27 @@
 ## [Unreleased]
 
+## [4.0.0] - 2026-09-16
+
+- [Breaking change] The vocabulary is `company` 3.0: `assigned_to` is `of`, so
+  `account.visits.of(technician)` is what `account.visits.assigned_to(technician)` was. The pin
+  is `~> 3.0`.
+
+- [Feature] `account.windows`, the free time of the location: every stretch nobody is booked
+  for, read off `GET /company/schedule_availability/booking_windows`. Housecall Pro works it out
+  for itself -- it holds the hours the business keeps, the notice it needs, the padding it
+  leaves around a job and the calendar blocked out -- so this asks rather than reckons, and an
+  hour held is already taken off.
+
+- [Feature] Housecall Pro answers a week as a row of short windows, each open or not. The open
+  ones that run together are joined back into the stretch they came from, so a window is as long
+  as the pro is free rather than as long as their booking page happens to offer. What to cut it
+  into is the caller's, where an offer is being made.
+
+- [Note] `start_date`, `show_for_days` and `employee_ids` all narrow this list, so one person's
+  week is one request -- unlike `/events`, which accepts the same words and ignores them. An
+  account with nothing open answers a bare list rather than the usual object, and both shapes
+  are read.
+
 ## [3.1.0] - 2026-09-16
 
 - [Feature] `account.visits` covers the time blocked out around the work, which Housecall Pro

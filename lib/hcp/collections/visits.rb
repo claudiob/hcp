@@ -31,7 +31,7 @@ module Hcp
     # to it, so the stops they are not on are let go once the work comes back.
     # @param technician [Company::Technician] whoever the work is booked for.
     # @return [Company::Selection] the same list, narrowed to the stops they are booked for.
-    def assigned_to(technician)
+    def of(technician)
       theirs = with technician: technician
       Company::Selection.new(collection: theirs) do |visit|
         visit.technicians.any? { |each| each.id == technician.id }

@@ -16,6 +16,9 @@ module Hcp
     # @return [Visits] visits of the location, read off its jobs.
     def visits = Visits.new client: @client
 
+    # @return [Windows] free time of the location, as Housecall Pro works it out.
+    def windows = Windows.new client: @client
+
     # @return [Technicians] employees of the location, walked a page at a time.
     def technicians = Technicians.new client: @client
 

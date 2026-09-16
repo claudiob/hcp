@@ -30,7 +30,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = [ 'lib' ]
 
   spec.add_dependency 'activesupport' # blank?, compact_blank and to_query are missing without it
-  spec.add_dependency 'company', '~> 2.1' # the account has no vocabulary to answer in without it
+  spec.add_dependency 'company', '~> 3.0' # the account has no vocabulary to answer in without it
   spec.add_dependency 'ice_cube' # an event that repeats has no hours after the first without it
   spec.add_development_dependency 'minitest' # the test suite has no framework to run in without it
   spec.add_development_dependency 'rake' # `rake` has no tasks to run without it

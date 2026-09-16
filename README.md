@@ -147,7 +147,7 @@ One technician's week is the visits in it narrowed to them, which is how a sched
 
 ```ruby
 monday = Date.today.beginning_of_week.in_time_zone
-account.visits.between(monday, monday + 1.week).assigned_to(technician).each do |visit|
+account.visits.between(monday, monday + 1.week).of(technician).each do |visit|
   visit.starts_at, visit.ends_at, visit.job.location.street
 end
 ```
@@ -158,6 +158,24 @@ of work went from 15 jobs to 5 and from 40 estimates to 2. It narrows no further
 dispatched to some of its crew or to none of it, so a stop dispatched to nobody is the whole
 crew's, and the stops the technician is not on are let go once the jobs arrive. Asking for the
 week and asking for the technician narrow the same list, in either order.
+
+The other half of that week is the hours they are *not* out, which Housecall Pro works out for
+itself and answers whole:
+
+```ruby
+account.windows.between(monday, monday + 1.week).of(technician).each do |window|
+  window.starts_at, window.ends_at
+end
+```
+
+It holds the hours the business keeps, the notice it needs, the padding it leaves around a job
+and the time blocked out on the calendar, so this asks rather than reckons and the holds are
+already taken off. It answers a week as a row of short windows, each open or not; the open ones
+that run together are one stretch and are joined back into it, so a window is as long as the pro
+is free rather than as long as their booking page happens to offer.
+
+`start_date`, `show_for_days` and `employee_ids` all narrow, so a week for one person is the one
+request -- unlike `/events`, which accepts the same words and ignores them.
 
 What Housecall Pro schedules elsewhere is still not here: time blocked out on the calendar is
 filed under `/events`, which takes no date and no employee to narrow by, so a week of it cannot

@@ -7,3 +7,5 @@
 /tmp/
 
 *.gem
+Gemfile.local
+Gemfile.local.lock
