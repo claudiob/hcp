@@ -106,7 +106,7 @@
       <div class='snippet'><pre><code>account = Hcp::Account.new key: 'the-api-key'
 account = Hcp::Account.new key: 'the-api-key', company_id: 'loc_1'</code></pre></div>
       <p class='note'><code class='inline'>company_id:</code> is sent as <code class='inline'>X-Company-Id</code>. The account a key belongs to refuses the header, so it is only sent where a location is named. Every record read through the account is read as that location, so a job read as one reaches its lines as the same one.</p>
-      <p class='note'>The account answers four things, and each is documented on its own page: <a href='#business'><code class='inline'>business</code></a>, <a href='jobs.html'><code class='inline'>jobs</code></a>, <a href='visits.html'><code class='inline'>visits</code></a> and <a href='leads.html'><code class='inline'>leads</code></a>.</p>
+      <p class='note'>The account answers five things: <a href='#business'><code class='inline'>business</code></a>, <a href='jobs.html'><code class='inline'>jobs</code></a>, <a href='visits.html'><code class='inline'>visits</code></a>, <a href='#windows'><code class='inline'>windows</code></a> and <a href='leads.html'><code class='inline'>leads</code></a>.</p>
     </section>
 
     <section id='business'>
@@ -149,6 +149,19 @@ end</code></pre></div>
   visit.job              # =&gt; the Hcp::Job the stop belongs to, its place along
 end</code></pre></div>
       <p class='note'>Nothing is read until the walk starts, and a page only once the one before it runs out. <code class='inline'>past</code> and <code class='inline'>upcoming</code> take how far the window reaches from now &mdash; a duration in Rails, a number of seconds outside it, or nothing at all for as far as the account goes. Everything a job reads is on <a href='jobs.html'>the jobs page</a>, and everything a visit reads on <a href='visits.html'>the visits page</a>.</p>
+    </section>
+
+    <section id='windows'>
+      <div class='head'>
+        <h2>Free time</h2>
+        <a class='anchor' href='#windows' aria-label='Link to Free time'>#</a>
+      </div>
+      <p class='note'>The other half of a schedule: not the hours somebody is out, but the ones they are not. Housecall Pro works it out for itself &mdash; the hours the business keeps, the notice it needs, the padding it leaves around a job and the time blocked out on the calendar &mdash; so this asks rather than reckons, and an hour held is already taken off:</p>
+      <div class='snippet'><pre><code>account.windows.upcoming(1.week).of(technician).each do |window|
+  window.starts_at, window.ends_at
+end</code></pre></div>
+      <p class='note'>Housecall Pro answers a week as a row of short windows, each open or not. The open ones that run together are one stretch and are joined back into it, so a window is as long as the pro is free rather than as long as their booking page happens to offer. What to cut it into belongs to whoever is making an offer, and a stretch kept whole can still be cut.</p>
+      <p class='note'>The window, the length and the pro all narrow the one request, so a week for one person costs one &mdash; unlike the time blocked out on the calendar, which accepts the same words and ignores them.</p>
     </section>
 
     <section id='leads'>
@@ -217,6 +230,7 @@ event.invoice_id, event.invoice_job_id, event.invoice_amount</code></pre></div>
 <ul class='cards'>
   <li><a href='jobs.html'>Jobs</a><p>Work a Housecall Pro user accepted: what it is, who it is for, and what it comes to. <code>Hcp::Job</code></p></li>
   <li><a href='visits.html'>Visits</a><p>The stops a job is booked as, which Housecall Pro calls appointments. <code>Hcp::Visit</code></p></li>
+  <li><a href='#windows'>Windows</a><p>The stretches nobody is booked for, which Housecall Pro works out itself. <code>Hcp::Windows</code></p></li>
   <li><a href='records.html'>Records</a><p>The business, and what a job carries: its location, its customer, its lines and its quote.</p></li>
   <li><a href='leads.html'>Leads</a><p>Opening a lead, and moving one through the pipeline. The only two writes the gem has. <code>Hcp::Lead</code></p></li>
   <li><a href='events.html'>Events</a><p>Reading a webhook payload, without reaching the network for anything. <code>Hcp::Event</code></p></li>
