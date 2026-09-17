@@ -1,5 +1,16 @@
 ## [Unreleased]
 
+## [5.0.0] - 2026-09-17
+
+- [Breaking change] The vocabulary is `company` 4.0: `of` takes the ID Housecall Pro files a
+  technician under rather than the technician, so `account.visits.of(technician.id)` is what
+  `account.visits.of(technician)` was, and the same for `account.windows`. The pin is `~> 4.0`.
+
+- [Note] The ID is the whole of what this gem ever narrowed by -- `employee_ids` on both lists,
+  and a comparison on the walk -- and taking it plainly is what stops a caller handing over a
+  record of its own whose `id` is not the one Housecall Pro knows. That has already happened
+  once, and Housecall Pro answered with everybody's free time rather than one person's.
+
 ## [4.1.0] - 2026-09-17
 
 - [Feature] `account.visits.for_work`, the stops of jobs and of estimates together and the hours

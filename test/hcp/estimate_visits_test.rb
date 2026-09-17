@@ -51,7 +51,7 @@ class EstimateVisitsTest < Minitest::Test
   def test_one_technicians_week_asks_both_lists_for_their_work
     grace = Hcp::Technician.new node: { id: 'emp_1' }
 
-    assert_equal %w[appt_1 est_1], account.visits.upcoming(2.weeks).of(grace).ids
+    assert_equal %w[appt_1 est_1], account.visits.upcoming(2.weeks).of(grace.id).ids
     [ @jobs, @estimates ].each do |list|
       assert_requested :get, list, query: hash_including('employee_ids' => [ 'emp_1' ])
     end

@@ -6,7 +6,7 @@ module Hcp
     # @param client [Client] how to reach Housecall Pro as the location.
     # @param from [Time, nil] the moment the window opens, or nothing for every visit there was.
     # @param to [Time, nil] the moment the window closes, or nothing for every visit to come.
-    # @param technician [Company::Technician, nil] whose work to ask for, or nothing for all.
+    # @param technician [String, nil] ID of whose work to ask for, or nothing for all.
     # @param jobs [Boolean] whether to read the stops of jobs.
     # @param leads [Boolean] whether to read the stops of estimates.
     # @param events [Boolean] whether to read the hours blocked out around them.
@@ -29,12 +29,12 @@ module Hcp
     # Housecall Pro narrows both lists by who is assigned to the work, so the window is asked
     # for as this technician's; a job's stop is the whole crew's until somebody is dispatched
     # to it, so the stops they are not on are let go once the work comes back.
-    # @param technician [Company::Technician] whoever the work is booked for.
-    # @return [Company::Selection] the same list, narrowed to the stops they are booked for.
-    def of(technician)
-      theirs = with technician: technician
+    # @param id [String] ID Housecall Pro files whoever the work is booked for under.
+    # @return [Company::Selection] the same list, narrowed to the visits they are booked for.
+    def of(id)
+      theirs = with technician: id
       Company::Selection.new(collection: theirs) do |visit|
-        visit.technicians.any? { |each| each.id == technician.id }
+        visit.technicians.any? { |technician| technician.id == id }
       end
     end
 
@@ -75,7 +75,7 @@ module Hcp
 
     def window = @from..@to
 
-    def crew = { employee_ids: (@technician && [ @technician.id ]) }
+    def crew = { employee_ids: (@technician && [ @technician ]) }
 
     def jobs
       bounds = { scheduled_end_min: @from&.utc&.iso8601, scheduled_start_max: @to&.utc&.iso8601 }

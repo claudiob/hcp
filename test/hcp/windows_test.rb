@@ -35,7 +35,7 @@ class WindowsTest < Minitest::Test
     stub_windows []
     monday = Time.iso8601 '2026-09-14T00:00:00Z'
 
-    account.windows.between(monday, monday + 3.days).of(technician).to_a
+    account.windows.between(monday, monday + 3.days).of(technician.id).to_a
 
     assert_requested :get, @windows, query: hash_including({}), times: 1 do |request|
       request.uri.query_values == { 'start_date' => '2026-09-14T00:00:00', 'show_for_days' => '3',

@@ -151,7 +151,7 @@ One technician's week is the visits in it narrowed to them, which is how a sched
 
 ```ruby
 monday = Date.today.beginning_of_week.in_time_zone
-account.visits.between(monday, monday + 1.week).of(technician).each do |visit|
+account.visits.between(monday, monday + 1.week).of(technician.id).each do |visit|
   visit.starts_at, visit.ends_at, visit.job.location.street
 end
 ```
@@ -167,7 +167,7 @@ The other half of that week is the hours they are *not* out, which Housecall Pro
 itself and answers whole:
 
 ```ruby
-account.windows.between(monday, monday + 1.week).of(technician).each do |window|
+account.windows.between(monday, monday + 1.week).of(technician.id).each do |window|
   window.starts_at, window.ends_at
 end
 ```

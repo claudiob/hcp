@@ -39,7 +39,7 @@ class TechniciansTest < Minitest::Test
   def test_one_technicians_week_asks_for_their_jobs_and_keeps_the_stops_they_are_on
     alan = account.technicians.find { |technician| technician.id == 'emp_2' }
 
-    assert_equal %w[appt_2], account.visits.upcoming(1.week).of(alan).ids
+    assert_equal %w[appt_2], account.visits.upcoming(1.week).of(alan.id).ids
     assert_requested :get, @jobs, query: hash_including('employee_ids' => [ 'emp_2' ])
   end
 

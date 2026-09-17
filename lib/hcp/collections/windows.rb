@@ -9,8 +9,8 @@ module Hcp
     DAYS = 7
 
     # @param client [Client] how to reach Housecall Pro as the location.
-    # @param technician [Company::Technician, nil] whose free time to ask for, or nothing for
-    #   whether anybody at all is free.
+    # @param technician [String, nil] ID of whose free time to ask for, or nothing for whether
+    #   anybody at all is free.
     # @param from [Time, nil] the moment the window opens, or nothing for the first day open.
     # @param to [Time, nil] the moment the window closes, or nothing for a week of it.
     def initialize(client:, technician: nil, from: nil, to: nil)
@@ -27,9 +27,9 @@ module Hcp
 
     # Housecall Pro narrows free time by who it is free for, so the technician joins the window
     # in the one request and nobody else's hours are answered or paid for.
-    # @param technician [Company::Technician] whose free time to answer.
+    # @param id [String] ID Housecall Pro files whoever is free under.
     # @return [Windows] the same list, as that technician's alone.
-    def of(technician) = with(technician: technician)
+    def of(id) = with(technician: id)
 
     # Housecall Pro answers a week as a row of short windows, each open or not. Consecutive open
     # ones are one stretch of free time and are joined back into it, so what comes out is as long
@@ -61,7 +61,7 @@ module Hcp
 
     def params
       { start_date: @from&.utc&.strftime('%Y-%m-%dT%H:%M:%S'), show_for_days: days,
-        employee_ids: (@technician && [ @technician.id ]), }.compact
+        employee_ids: (@technician && [ @technician ]), }.compact
     end
 
     def days = (@to && @from) ? ((@to - @from) / 1.day).ceil : DAYS
