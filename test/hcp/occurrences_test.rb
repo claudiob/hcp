@@ -55,8 +55,19 @@ class OccurrencesTest < Minitest::Test
   def test_leaves_the_sweep_unasked_where_only_the_stops_of_work_are_wanted
     account.visits.between(monday, monday + 1.week).for_jobs.to_a
     account.visits.between(monday, monday + 1.week).for_leads.to_a
+    account.visits.between(monday, monday + 1.week).for_work.to_a
 
     assert_not_requested :get, @events
+  end
+
+  # Both kinds of stop and neither hour held: the jobs and the estimates are still read, so
+  # what is spared is the sweep alone.
+  def test_reads_the_work_of_both_kinds_where_the_sweep_is_spared
+    stub_events [ once ]
+
+    assert_empty account.visits.between(monday, monday + 1.week).for_work.to_a
+    assert_requested :get, "#{HousecallStubs::HOST}/jobs", query: hash_including({}), times: 1
+    assert_requested :get, "#{HousecallStubs::HOST}/estimates", query: hash_including({}), times: 1
   end
 
 private

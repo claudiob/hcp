@@ -118,7 +118,11 @@ for the stops of work alone:
 ```ruby
 account.visits.upcoming(2.weeks).for_jobs  # => only the appointments, one request
 account.visits.upcoming(2.weeks).for_leads # => only the estimates' slots, one request
+account.visits.upcoming(2.weeks).for_work  # => both kinds of stop, and no sweep
 ```
+
+`for_work` is the one to ask for where a caller wants the work and not the hours held around it:
+the jobs and the estimates are still read, and the fifteen requests of the sweep are not spent.
 
 A stop says where it is without being asked what it was booked for: an appointment has no
 address of its own and takes the job's, and an estimate's slot takes the estimate's. A caller

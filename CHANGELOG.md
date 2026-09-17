@@ -1,5 +1,17 @@
 ## [Unreleased]
 
+## [4.1.0] - 2026-09-17
+
+- [Feature] `account.visits.for_work`, the stops of jobs and of estimates together and the hours
+  held around them left unread. `/events` narrows by nothing, so reading blocked-out time costs
+  a sweep of every page on top of the two requests the work itself takes -- fifteen of them on
+  an account with 2,877 events. A caller that wants the work and not the holds now says so and
+  is spared them.
+
+- [Note] The vocabulary is `company` 3.1, where `for_work` is named. A platform that answers its
+  whole list at once gets the narrowing for free; this one pushes it down to the requests it
+  does not then make.
+
 ## [4.0.0] - 2026-09-16
 
 - [Breaking change] The vocabulary is `company` 3.0: `assigned_to` is `of`, so

@@ -44,6 +44,10 @@ module Hcp
     # @return [Visits] the same list, read off the estimates alone: one request rather than many.
     def for_leads = with(jobs: false, events: false)
 
+    # @return [Visits] the same list, read off the work alone: two requests rather than the
+    #   fifteen a sweep of the calendar costs on top of them.
+    def for_work = with(events: false)
+
     # Work booked across the window carries every stop in it, so each list is read once and
     # what was called off keeps its stops to itself.
     # @yield [Company::Visit] each visit in the window, the work's stops before the hours
